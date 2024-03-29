@@ -1,3 +1,17 @@
 {
-	"name": "Assambra.Server"
+    "name": "Assambra.Server",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2ffcefc7a4ec51e499e307955c30b901",
+        "GUID:126d3909fd7c13a45a9e42871cdb4ac7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

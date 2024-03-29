@@ -1,3 +1,17 @@
 {
-	"name": "Assambra.Client"
+    "name": "Assambra.Client",
+    "rootNamespace": "",
+    "references": [
+        "GUID:2ffcefc7a4ec51e499e307955c30b901",
+        "GUID:b339987072a5ec644bb4407599496da2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
