@@ -8,4 +8,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Server/Scenes/Persistent.unity
     guid: 3bcc3b36a31061c40bb51cc6bfb9d895
+  - enabled: 1
+    path: Assets/Server/Scenes/Start.unity
+    guid: 38b596616bffc474c91d0475b32ccabd
+  - enabled: 1
+    path: Assets/Server/Scenes/World.unity
+    guid: 1e255eb426161b243978a9c1906fd757
+  - enabled: 1
+    path: Assets/Server/Scenes/BossRoom.unity
+    guid: 325914e10ce90b441a6d87271ad72073
   m_configObjects: {}

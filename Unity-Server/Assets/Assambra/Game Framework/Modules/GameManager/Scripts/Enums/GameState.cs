@@ -12,7 +12,7 @@ namespace Assambra.GameFramework.GameManager
         //GameOver
 
         None,
-        Lobby,
-        Game,
+        Start,
+        Server,
     }
 }
