@@ -65,7 +65,6 @@ namespace Assambra.Client
             socketProxy.setDefaultAppName(socketConfig.AppName);
             socketProxy.setTransportType(EzyTransportType.UDP);
 
-
             socketProxy.connect();
         }
 

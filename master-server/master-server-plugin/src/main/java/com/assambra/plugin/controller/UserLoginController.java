@@ -10,14 +10,16 @@ import com.tvd12.ezyfoxserver.context.EzyPluginContext;
 import com.tvd12.ezyfoxserver.controller.EzyAbstractPluginEventController;
 import com.tvd12.ezyfoxserver.event.EzyUserLoginEvent;
 import com.tvd12.ezyfoxserver.exception.EzyLoginErrorException;
+import lombok.AllArgsConstructor;
 
 import static com.tvd12.ezyfoxserver.constant.EzyEventNames.USER_LOGIN;
 
 @EzySingleton
 @EzyEventHandler(USER_LOGIN)
+@AllArgsConstructor
 public class UserLoginController extends EzyAbstractPluginEventController<EzyUserLoginEvent> {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Override
     public void handle(EzyPluginContext ctx, EzyUserLoginEvent event) {
