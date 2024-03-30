@@ -68,5 +68,6 @@
         <module>master-server-app-api</module>
         <module>master-server-app-entry</module>
         <module>master-server-startup</module>
+        <module>game-box-master-server-unity</module>
     </modules>
 </project>
