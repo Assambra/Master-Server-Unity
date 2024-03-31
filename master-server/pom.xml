@@ -34,6 +34,11 @@
             <artifactId>ezyfox-server-core</artifactId>
             <version>${ezy.server.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.assambra</groupId>
+            <artifactId>game-box-master-server-unity</artifactId>
+            <version>0.1.0</version>
+        </dependency>
     </dependencies>
     <profiles>
         <profile>
