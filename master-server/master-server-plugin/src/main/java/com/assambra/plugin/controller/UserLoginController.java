@@ -20,6 +20,8 @@ import static com.tvd12.ezyfoxserver.constant.EzyEventNames.USER_LOGIN;
 public class UserLoginController extends EzyAbstractPluginEventController<EzyUserLoginEvent> {
 
     private final UserService userService;
+    private Boolean isServer = false;
+    private String[] allowedServerUsernames = {"World"};
 
     @Override
     public void handle(EzyPluginContext ctx, EzyUserLoginEvent event) {
@@ -28,19 +30,28 @@ public class UserLoginController extends EzyAbstractPluginEventController<EzyUse
         String username = event.getUsername();
         String password = encodePassword(event.getPassword());
 
-        User user = userService.getUser(username);
-
-        if (user == null) {
-            logger.info("User doesn't exist in db, create a new one!");
-            user = userService.createUser(username, password);
-            userService.saveUser(user);
+        for(String server : allowedServerUsernames)
+        {
+            if(server == username)
+                isServer = true;
         }
 
-        if (!user.getPassword().equals(password)) {
-            throw new EzyLoginErrorException(EzyLoginError.INVALID_PASSWORD);
-        }
+        if(!isServer)
+        {
+            User user = userService.getUser(username);
 
-        logger.info("user and password match, accept user: {}", username);
+            if (user == null) {
+                logger.info("User doesn't exist in db, create a new one!");
+                user = userService.createUser(username, password);
+                userService.saveUser(user);
+            }
+
+            if (!user.getPassword().equals(password)) {
+                throw new EzyLoginErrorException(EzyLoginError.INVALID_PASSWORD);
+            }
+
+            logger.info("user and password match, accept user: {}", username);
+        }
     }
 
     private String encodePassword(String password) {
