@@ -4,11 +4,9 @@ import com.assambra.common.entity.User;
 import com.assambra.common.repo.UserRepo;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import lombok.AllArgsConstructor;
-import lombok.Setter;
-
 import java.util.List;
 
-@Setter
+
 @AllArgsConstructor
 @EzySingleton("userService")
 public class UserService {
