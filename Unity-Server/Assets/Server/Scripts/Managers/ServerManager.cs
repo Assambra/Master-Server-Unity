@@ -23,15 +23,20 @@ namespace Assambra.Server
 
             string[] args = Environment.GetCommandLineArgs();
 
-            if (args.Length >= 3)
+            for (int i = 1; i < args.Length; i++)
             {
-                _username = args[1];
-                _password = args[2];
-                _room = args[3];
-            }
-            else
-            {
-                Debug.LogError("Insufficient command line arguments. Expected format: [executable] username password room");
+                if (args[i] == "--username" && i + 1 < args.Length)
+                {
+                    _username = args[i + 1];
+                }
+                else if (args[i] == "--password" && i + 1 < args.Length)
+                {
+                    _password = args[i + 1];
+                }
+                else if (args[i] == "--room" && i + 1 < args.Length)
+                {
+                    _room = args[i + 1];
+                }
             }
         }
 
