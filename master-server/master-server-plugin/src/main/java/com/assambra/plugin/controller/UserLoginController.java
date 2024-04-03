@@ -30,9 +30,9 @@ public class UserLoginController extends EzyAbstractPluginEventController<EzyUse
         String username = event.getUsername();
         String password = encodePassword(event.getPassword());
 
-        for(String server : allowedServerUsernames)
+        for(String serverUsername : allowedServerUsernames)
         {
-            if(server == username)
+            if(serverUsername == username)
                 isServer = true;
         }
 
