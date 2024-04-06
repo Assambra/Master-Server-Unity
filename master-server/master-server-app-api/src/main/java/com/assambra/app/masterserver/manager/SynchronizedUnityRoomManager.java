@@ -4,7 +4,6 @@ import com.assambra.app.masterserver.entity.UnityRoom;
 import com.assambra.gameboxmasterserverunity.manager.AbstractRoomManager;
 import com.assambra.gameboxmasterserverunity.manager.RoomManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
