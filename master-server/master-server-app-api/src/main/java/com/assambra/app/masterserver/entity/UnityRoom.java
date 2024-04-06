@@ -1,18 +1,17 @@
 package com.assambra.app.masterserver.entity;
 
-import com.assambra.app.masterserver.model.ServerModel;
 import com.assambra.app.masterserver.util.RandomStringUtil;
 import com.assambra.gameboxmasterserverunity.entity.NormalRoom;
 import com.assambra.app.masterserver.server.UnityServer;
+import lombok.Getter;
 
 import java.io.IOException;
 
 public class UnityRoom extends NormalRoom {
     protected final UnityServer unityServer;
     protected final String randomPassword;
+    @Getter
     protected Process unityProcess;
-    private ServerModel serverDetails;
-
 
     public UnityRoom(Builder builder) {
         super(builder);
@@ -27,23 +26,10 @@ public class UnityRoom extends NormalRoom {
 
         try {
             this.unityProcess = unityServer.start();
-            if (this.unityProcess != null) {
-
-                this.serverDetails = ServerModel.builder()
-                        .username(this.name)
-                        .password(randomPassword)
-                        .room(this.name)
-                        .process(unityProcess)
-                        .build();
-            }
         } catch (IOException e) {
             e.printStackTrace();
             // Todo create room exception
         }
-    }
-
-    public ServerModel getServerDetails() {
-        return this.serverDetails;
     }
 
     public static Builder builder() {
