@@ -1,7 +1,6 @@
 package com.assambra.app.masterserver.manager;
 
 import com.assambra.app.masterserver.entity.UnityRoom;
-import com.assambra.app.masterserver.model.ServerModel;
 import com.assambra.gameboxmasterserverunity.manager.AbstractRoomManager;
 import com.assambra.gameboxmasterserverunity.manager.RoomManager;
 
@@ -26,8 +25,6 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
     public static SynchronizedUnityRoomManager.Builder builder() {
         return new SynchronizedUnityRoomManager.Builder<>();
     }
-
-    public List<ServerModel> Servers = new ArrayList<>();
 
     @Override
     public void addRoom(R room, boolean failIfAdded) {
