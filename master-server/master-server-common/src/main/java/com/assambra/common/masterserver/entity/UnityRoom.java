@@ -1,9 +1,9 @@
-package com.assambra.app.masterserver.entity;
+package com.assambra.common.masterserver.entity;
 
-import com.assambra.app.masterserver.manager.SynchronizedUnityPlayerManager;
-import com.assambra.app.masterserver.util.RandomStringUtil;
+import com.assambra.common.masterserver.manager.SynchronizedUnityPlayerManager;
+import com.assambra.common.masterserver.server.UnityServer;
+import com.assambra.common.masterserver.util.RandomStringUtil;
 import com.assambra.gameboxmasterserverunity.entity.NormalRoom;
-import com.assambra.app.masterserver.server.UnityServer;
 import com.assambra.gameboxmasterserverunity.entity.Player;
 import com.assambra.gameboxmasterserverunity.manager.PlayerManager;
 import lombok.Getter;

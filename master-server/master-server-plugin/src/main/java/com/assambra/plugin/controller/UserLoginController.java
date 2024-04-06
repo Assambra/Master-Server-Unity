@@ -12,6 +12,9 @@ import com.tvd12.ezyfoxserver.event.EzyUserLoginEvent;
 import com.tvd12.ezyfoxserver.exception.EzyLoginErrorException;
 import lombok.AllArgsConstructor;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.tvd12.ezyfoxserver.constant.EzyEventNames.USER_LOGIN;
 
 @EzySingleton
@@ -20,8 +23,8 @@ import static com.tvd12.ezyfoxserver.constant.EzyEventNames.USER_LOGIN;
 public class UserLoginController extends EzyAbstractPluginEventController<EzyUserLoginEvent> {
 
     private final UserService userService;
-    private Boolean isServer = false;
-    private String[] allowedServerUsernames = {"World"};
+    private final List<String> allowedServerUsernames = Arrays.asList(new String[]{"World", "Chat"});
+
 
     @Override
     public void handle(EzyPluginContext ctx, EzyUserLoginEvent event) {
@@ -30,13 +33,7 @@ public class UserLoginController extends EzyAbstractPluginEventController<EzyUse
         String username = event.getUsername();
         String password = encodePassword(event.getPassword());
 
-        for(String serverUsername : allowedServerUsernames)
-        {
-            if(serverUsername == username)
-                isServer = true;
-        }
-
-        if(!isServer)
+        if(!allowedServerUsernames.contains(username))
         {
             User user = userService.getUser(username);
 

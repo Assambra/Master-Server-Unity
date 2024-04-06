@@ -1,6 +1,6 @@
-package com.assambra.app.masterserver.manager;
+package com.assambra.common.masterserver.manager;
 
-import com.assambra.app.masterserver.entity.UnityPlayer;
+import com.assambra.common.masterserver.entity.UnityPlayer;
 import com.assambra.gameboxmasterserverunity.manager.AbstractPlayerManager;
 import com.assambra.gameboxmasterserverunity.manager.PlayerManager;
 

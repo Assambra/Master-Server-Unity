@@ -1,4 +1,4 @@
-package com.assambra.app.masterserver.entity;
+package com.assambra.common.masterserver.entity;
 
 import com.assambra.gameboxmasterserverunity.entity.Player;
 

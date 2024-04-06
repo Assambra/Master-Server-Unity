@@ -1,4 +1,4 @@
-package com.assambra.app.masterserver.server;
+package com.assambra.common.masterserver.server;
 
 import com.tvd12.ezyfox.stream.EzyAnywayInputStreamLoader;
 import com.tvd12.ezyfox.util.EzyLoggable;

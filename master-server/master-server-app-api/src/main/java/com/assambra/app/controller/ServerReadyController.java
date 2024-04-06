@@ -1,5 +1,8 @@
 package com.assambra.app.controller;
 
+import com.assambra.common.masterserver.entity.UnityRoom;
+import com.assambra.gameboxmasterserverunity.manager.RoomManager;
+import com.tvd12.ezyfox.bean.annotation.EzyAutoBind;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import com.tvd12.ezyfox.core.annotation.EzyEventHandler;
 import com.tvd12.ezyfoxserver.context.EzyAppContext;
@@ -13,8 +16,21 @@ import static com.tvd12.ezyfoxserver.constant.EzyEventNames.SERVER_READY;
 public class ServerReadyController
     extends EzyAbstractAppEventController<EzyServerReadyEvent> {
 
+    @EzyAutoBind
+    private RoomManager<UnityRoom> globalRoomManager;
+
     @Override
     public void handle(EzyAppContext ctx, EzyServerReadyEvent event) {
-        logger.info("master-server app: fire custom app ready");
+        logger.info("Initialize Server: World");
+        globalRoomManager.addRoom(world());
+    }
+
+    private UnityRoom world()
+    {
+        return UnityRoom.builder()
+                .id(1)
+                .name("World")
+                .maxPlayer(10000)
+                .build();
     }
 }

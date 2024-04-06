@@ -1,4 +1,4 @@
-package com.assambra.app.masterserver.util;
+package com.assambra.common.masterserver.util;
 
 public class RandomStringUtil {
 

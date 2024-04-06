@@ -1,6 +1,6 @@
-package com.assambra.app.masterserver.manager;
+package com.assambra.common.masterserver.manager;
 
-import com.assambra.app.masterserver.entity.UnityRoom;
+import com.assambra.common.masterserver.entity.UnityRoom;
 import com.assambra.gameboxmasterserverunity.manager.AbstractRoomManager;
 import com.assambra.gameboxmasterserverunity.manager.RoomManager;
 
