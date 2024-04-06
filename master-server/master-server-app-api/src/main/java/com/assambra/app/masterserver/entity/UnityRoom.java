@@ -1,9 +1,13 @@
 package com.assambra.app.masterserver.entity;
 
+import com.assambra.app.masterserver.manager.SynchronizedUnityPlayerManager;
 import com.assambra.app.masterserver.util.RandomStringUtil;
 import com.assambra.gameboxmasterserverunity.entity.NormalRoom;
 import com.assambra.app.masterserver.server.UnityServer;
+import com.assambra.gameboxmasterserverunity.entity.Player;
+import com.assambra.gameboxmasterserverunity.manager.PlayerManager;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 
@@ -12,6 +16,9 @@ public class UnityRoom extends NormalRoom {
     protected final String randomPassword;
     @Getter
     protected Process unityProcess;
+    @Getter
+    @Setter
+    protected UnityPlayer master;
 
     public UnityRoom(Builder builder) {
         super(builder);
@@ -36,7 +43,58 @@ public class UnityRoom extends NormalRoom {
         return new Builder();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void addPlayer(Player player) {
+        if (!(player instanceof UnityPlayer)) {
+            throw new IllegalArgumentException("Player " + player.getName() + " must be UnityPlayer");
+        }
+
+        if (playerManager.containsPlayer(player)) {
+            return;
+        }
+
+        synchronized (this) {
+            if (playerManager.isEmpty()) {
+                master = (UnityPlayer) player;
+            }
+            super.addPlayer(player);
+        }
+    }
+
     public static class Builder extends NormalRoom.Builder<Builder> {
+
+        protected int maxPlayer = 999;
+
+        public UnityRoom.Builder maxPlayer(int maxPlayer) {
+            this.maxPlayer = maxPlayer;
+            return this;
+        }
+
+        @Override
+        public UnityRoom.Builder defaultPlayerManager(int maxPlayer) {
+            this.playerManager = new SynchronizedUnityPlayerManager<>(maxPlayer);
+            return this;
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public UnityRoom.Builder playerManager(PlayerManager playerManager) {
+            if (playerManager instanceof SynchronizedUnityPlayerManager) {
+                return super.playerManager(playerManager);
+            }
+            throw new IllegalArgumentException("playerManager must be SynchronizedUnityPlayerManager");
+        }
+
+        @Override
+        protected void preBuild() {
+            if (playerManager == null) {
+                playerManager = new SynchronizedUnityPlayerManager<>(maxPlayer);
+            }
+
+            super.preBuild();
+        }
+
         @Override
         public UnityRoom build() {
             return new UnityRoom(this);
