@@ -1,12 +1,11 @@
 package com.assambra.app.config;
 
-import com.assambra.gameboxmasterserverunity.entity.NormalRoom;
-import com.assambra.gameboxmasterserverunity.entity.Player;
+import com.assambra.app.masterserver.entity.UnityPlayer;
+import com.assambra.app.masterserver.manager.SynchronizedUnityPlayerManager;
+import com.assambra.app.masterserver.manager.SynchronizedUnityRoomManager;
 import com.assambra.app.masterserver.entity.UnityRoom;
 import com.assambra.gameboxmasterserverunity.manager.PlayerManager;
 import com.assambra.gameboxmasterserverunity.manager.RoomManager;
-import com.assambra.gameboxmasterserverunity.manager.SynchronizedPlayerManager;
-import com.assambra.gameboxmasterserverunity.manager.SynchronizedRoomManager;
 import com.tvd12.ezyfox.bean.annotation.EzyConfigurationBefore;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import com.tvd12.ezyfox.util.EzyLoggable;
@@ -15,9 +14,9 @@ import com.tvd12.ezyfox.util.EzyLoggable;
 public class ServerConfig extends EzyLoggable {
 
     @EzySingleton("globalRoomManager")
-    public RoomManager<NormalRoom> globalRoomManager() {
+    public RoomManager<UnityRoom> globalRoomManager() {
 
-        RoomManager<NormalRoom> roomManager = new SynchronizedRoomManager<>();
+        RoomManager<UnityRoom> roomManager = new SynchronizedUnityRoomManager<>();
 
         roomManager.addRoom(world());
 
@@ -25,15 +24,16 @@ public class ServerConfig extends EzyLoggable {
     }
 
     @EzySingleton("globalPlayerManager")
-    public PlayerManager<Player> globalPlayerManager() {
-        return new SynchronizedPlayerManager<>();
+    public PlayerManager<UnityPlayer> globalPlayerManager() {
+        return new SynchronizedUnityPlayerManager<>();
     }
 
     private UnityRoom world() {
         logger.info("Initialize world room");
 
         return UnityRoom.builder()
-                .id(1)
+                .id(0)
+                .maxPlayer(10000)
                 .name("World")
                 .build();
     }
