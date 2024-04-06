@@ -113,6 +113,7 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
     public void removeRoom(R room) {
         synchronized (this) {
             super.removeRoom(room);
+            room.getUnityProcess().destroy();
         }
     }
 
@@ -120,6 +121,7 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
     public void removeRoom(long id) {
         synchronized (this) {
             super.removeRoom(id);
+            getRoom(id).getUnityProcess().destroy();
         }
     }
 
@@ -127,6 +129,7 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
     public void removeRoom(String name) {
         synchronized (this) {
             super.removeRoom(name);
+            getRoom(name).getUnityProcess().destroy();
         }
     }
 
@@ -134,6 +137,10 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
     public void removeRooms(Iterable<R> rooms) {
         synchronized (this) {
             super.removeRooms(rooms);
+            for (UnityRoom room : rooms)
+            {
+                room.getUnityProcess().destroy();
+            }
         }
     }
 
