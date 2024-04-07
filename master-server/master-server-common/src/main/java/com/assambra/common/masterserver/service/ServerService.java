@@ -1,4 +1,4 @@
-package com.assambra.app.service;
+package com.assambra.common.masterserver.service;
 
 import com.assambra.common.constant.UnityRoomStatus;
 import com.assambra.common.masterserver.entity.UnityRoom;

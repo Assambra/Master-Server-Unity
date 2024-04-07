@@ -1,8 +1,8 @@
-package com.assambra.app.controller;
+package com.assambra.common.masterserver.controller;
 
 import com.assambra.common.constant.UnityRoomStatus;
-import com.assambra.app.service.ServerService;
 import com.assambra.common.masterserver.constant.Commands;
+import com.assambra.common.masterserver.service.ServerService;
 import com.tvd12.ezyfox.core.annotation.EzyDoHandle;
 import com.tvd12.ezyfox.core.annotation.EzyRequestController;
 import com.tvd12.ezyfox.util.EzyLoggable;
