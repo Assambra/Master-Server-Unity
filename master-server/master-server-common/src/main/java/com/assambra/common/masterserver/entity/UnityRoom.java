@@ -1,5 +1,6 @@
 package com.assambra.common.masterserver.entity;
 
+import com.assambra.common.constant.UnityRoomStatus;
 import com.assambra.common.masterserver.manager.SynchronizedUnityPlayerManager;
 import com.assambra.common.masterserver.server.UnityServer;
 import com.assambra.common.masterserver.util.RandomStringUtil;
@@ -23,6 +24,7 @@ public class UnityRoom extends NormalRoom {
     public UnityRoom(Builder builder) {
         super(builder);
 
+        this.status = UnityRoomStatus.NONE;
         this.randomPassword = RandomStringUtil.getAlphaNumericString(6);
 
         this.unityServer = new UnityServer.Builder()

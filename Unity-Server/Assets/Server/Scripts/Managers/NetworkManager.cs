@@ -1,9 +1,11 @@
 using com.tvd12.ezyfoxserver.client;
 using com.tvd12.ezyfoxserver.client.constant;
+using com.tvd12.ezyfoxserver.client.entity;
 using com.tvd12.ezyfoxserver.client.request;
 using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
-using System;
+using UnityEngine;
+using Object = System.Object;
 
 namespace Assambra.Server
 {
@@ -13,7 +15,6 @@ namespace Assambra.Server
 
         private EzySocketConfig socketConfig;
 
-        
 
         private void Awake()
         {
@@ -28,6 +29,7 @@ namespace Assambra.Server
         private new void OnEnable()
         {
             base.OnEnable();
+            AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequestHandler);
         }
 
         private void Update()
@@ -86,11 +88,34 @@ namespace Assambra.Server
             socketProxy.send(new EzyAppAccessRequest(socketConfig.AppName));
         }
 
-
         private void HandleAppAccessed(EzyAppProxy proxy, Object data)
         {
             LOGGER.debug("App access successfully");
+            
+            LOGGER.debug("SendServerReady");
+            SendServerReady();
         }
+
+        #region SEND
+
+        private void SendServerReady()
+        {
+            appProxy.send(Commands.SERVER_READY);
+        }
+
+        #endregion
+
+        #region RECEIVE
+
+        private void ServerStopRequestHandler(EzyAppProxy proxy, EzyObject data)
+        {
+            LOGGER.debug("Receive SERVER_STOP request");
+            
+            Disconnect();
+            Application.Quit();
+        }
+
+        #endregion
     }
 }
 
