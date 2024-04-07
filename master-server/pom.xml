@@ -35,9 +35,9 @@
             <version>${ezy.server.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.assambra</groupId>
-            <artifactId>game-box-master-server-unity</artifactId>
-            <version>0.1.0</version>
+            <groupId>com.tvd12</groupId>
+            <artifactId>game-box</artifactId>
+            <version>1.2.2</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -73,6 +73,5 @@
         <module>master-server-app-api</module>
         <module>master-server-app-entry</module>
         <module>master-server-startup</module>
-        <module>game-box-master-server-unity</module>
     </modules>
 </project>

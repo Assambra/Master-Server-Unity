@@ -1,8 +1,8 @@
 package com.assambra.common.masterserver.manager;
 
 import com.assambra.common.masterserver.entity.UnityPlayer;
-import com.assambra.gameboxmasterserverunity.manager.AbstractPlayerManager;
-import com.assambra.gameboxmasterserverunity.manager.PlayerManager;
+import com.tvd12.gamebox.manager.AbstractPlayerManager;
+import com.tvd12.gamebox.manager.PlayerManager;
 
 import java.util.Collection;
 import java.util.List;

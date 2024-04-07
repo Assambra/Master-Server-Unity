@@ -4,9 +4,9 @@ import com.assambra.common.constant.UnityRoomStatus;
 import com.assambra.common.masterserver.manager.SynchronizedUnityPlayerManager;
 import com.assambra.common.masterserver.server.UnityServer;
 import com.assambra.common.masterserver.util.RandomStringUtil;
-import com.assambra.gameboxmasterserverunity.entity.NormalRoom;
-import com.assambra.gameboxmasterserverunity.entity.Player;
-import com.assambra.gameboxmasterserverunity.manager.PlayerManager;
+import com.tvd12.gamebox.entity.NormalRoom;
+import com.tvd12.gamebox.entity.Player;
+import com.tvd12.gamebox.manager.PlayerManager;
 import lombok.Getter;
 import lombok.Setter;
 

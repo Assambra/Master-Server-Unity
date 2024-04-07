@@ -2,12 +2,11 @@ package com.assambra.app.service;
 
 import com.assambra.common.constant.UnityRoomStatus;
 import com.assambra.common.masterserver.entity.UnityRoom;
-import com.assambra.gameboxmasterserverunity.constant.RoomStatus;
-import com.assambra.gameboxmasterserverunity.manager.RoomManager;
 import com.tvd12.ezyfox.bean.annotation.EzyAutoBind;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import com.tvd12.ezyfox.util.EzyLoggable;
 import com.tvd12.ezyfoxserver.entity.EzyUser;
+import com.tvd12.gamebox.manager.RoomManager;
 
 import java.util.List;
 

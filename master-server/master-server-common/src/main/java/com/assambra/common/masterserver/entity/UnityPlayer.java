@@ -1,6 +1,6 @@
 package com.assambra.common.masterserver.entity;
 
-import com.assambra.gameboxmasterserverunity.entity.Player;
+import com.tvd12.gamebox.entity.Player;
 
 public class UnityPlayer extends Player {
     public UnityPlayer(String name) {

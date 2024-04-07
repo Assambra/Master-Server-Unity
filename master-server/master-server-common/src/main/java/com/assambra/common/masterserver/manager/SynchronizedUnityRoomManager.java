@@ -1,8 +1,8 @@
 package com.assambra.common.masterserver.manager;
 
 import com.assambra.common.masterserver.entity.UnityRoom;
-import com.assambra.gameboxmasterserverunity.manager.AbstractRoomManager;
-import com.assambra.gameboxmasterserverunity.manager.RoomManager;
+import com.tvd12.gamebox.manager.AbstractRoomManager;
+import com.tvd12.gamebox.manager.RoomManager;
 
 import java.util.List;
 import java.util.function.Predicate;

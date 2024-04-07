@@ -1,7 +1,7 @@
 package com.assambra.common.constant;
 
-import com.assambra.gameboxmasterserverunity.constant.IRoomStatus;
 import com.tvd12.ezyfox.util.EzyEnums;
+import com.tvd12.gamebox.constant.IRoomStatus;
 import lombok.Getter;
 
 import java.util.Map;

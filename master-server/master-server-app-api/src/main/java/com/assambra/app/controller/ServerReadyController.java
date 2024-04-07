@@ -1,13 +1,13 @@
 package com.assambra.app.controller;
 
 import com.assambra.common.masterserver.entity.UnityRoom;
-import com.assambra.gameboxmasterserverunity.manager.RoomManager;
 import com.tvd12.ezyfox.bean.annotation.EzyAutoBind;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import com.tvd12.ezyfox.core.annotation.EzyEventHandler;
 import com.tvd12.ezyfoxserver.context.EzyAppContext;
 import com.tvd12.ezyfoxserver.controller.EzyAbstractAppEventController;
 import com.tvd12.ezyfoxserver.event.EzyServerReadyEvent;
+import com.tvd12.gamebox.manager.RoomManager;
 
 import static com.tvd12.ezyfoxserver.constant.EzyEventNames.SERVER_READY;
 
