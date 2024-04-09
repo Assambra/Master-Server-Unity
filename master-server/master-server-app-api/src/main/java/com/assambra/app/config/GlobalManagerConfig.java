@@ -1,4 +1,4 @@
-package com.assambra.common.masterserver.config;
+package com.assambra.app.config;
 
 import com.assambra.common.masterserver.manager.SynchronizedUnityPlayerManager;
 import com.assambra.common.masterserver.entity.UnityPlayer;

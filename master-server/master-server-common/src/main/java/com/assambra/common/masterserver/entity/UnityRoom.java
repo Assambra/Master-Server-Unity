@@ -14,7 +14,8 @@ import java.io.IOException;
 
 public class UnityRoom extends NormalRoom {
     protected final UnityServer unityServer;
-    protected final String randomPassword;
+    @Getter
+    protected final String password;
     @Getter
     protected Process unityProcess;
     @Getter
@@ -25,11 +26,11 @@ public class UnityRoom extends NormalRoom {
         super(builder);
 
         this.status = UnityRoomStatus.NONE;
-        this.randomPassword = RandomStringUtil.getAlphaNumericString(6);
+        this.password = RandomStringUtil.getAlphaNumericString(6);
 
         this.unityServer = new UnityServer.Builder()
                 .username(this.name)
-                .password(randomPassword)
+                .password(password)
                 .room(this.name)
                 .build();
 

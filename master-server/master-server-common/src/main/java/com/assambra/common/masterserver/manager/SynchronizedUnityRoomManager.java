@@ -1,6 +1,9 @@
 package com.assambra.common.masterserver.manager;
 
+import com.assambra.common.masterserver.constant.Commands;
 import com.assambra.common.masterserver.entity.UnityRoom;
+import com.tvd12.ezyfoxserver.entity.EzyUser;
+import com.tvd12.ezyfoxserver.support.factory.EzyResponseFactory;
 import com.tvd12.gamebox.manager.AbstractRoomManager;
 import com.tvd12.gamebox.manager.RoomManager;
 
@@ -24,6 +27,8 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
     public static SynchronizedUnityRoomManager.Builder builder() {
         return new SynchronizedUnityRoomManager.Builder<>();
     }
+
+    protected EzyResponseFactory responseFactory;
 
     @Override
     public void addRoom(R room, boolean failIfAdded) {
@@ -113,7 +118,7 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
     public void removeRoom(R room) {
         synchronized (this) {
             super.removeRoom(room);
-            room.getUnityProcess().destroy();
+            sendServerStop(room.getName());
         }
     }
 
@@ -121,7 +126,7 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
     public void removeRoom(long id) {
         synchronized (this) {
             super.removeRoom(id);
-            getRoom(id).getUnityProcess().destroy();
+            sendServerStop(getRoom(id).getName());
         }
     }
 
@@ -129,7 +134,7 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
     public void removeRoom(String name) {
         synchronized (this) {
             super.removeRoom(name);
-            getRoom(name).getUnityProcess().destroy();
+            sendServerStop(getRoom(name).getName());
         }
     }
 
@@ -139,7 +144,7 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
             super.removeRooms(rooms);
             for (UnityRoom room : rooms)
             {
-                room.getUnityProcess().destroy();
+                sendServerStop(room.getName());
             }
         }
     }
@@ -156,6 +161,14 @@ public class SynchronizedUnityRoomManager<R extends UnityRoom> extends AbstractR
         synchronized (this) {
             super.clear();
         }
+    }
+
+    private void sendServerStop(String username)
+    {
+        responseFactory.newObjectResponse()
+                .command(Commands.SERVER_STOP)
+                .username(username)
+                .execute();
     }
 
     public static class Builder<R extends UnityRoom, B extends SynchronizedUnityRoomManager.Builder<R, B>>

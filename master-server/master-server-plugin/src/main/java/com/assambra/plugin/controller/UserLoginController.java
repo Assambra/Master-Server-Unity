@@ -1,6 +1,8 @@
 package com.assambra.plugin.controller;
 
 import com.assambra.common.entity.User;
+import com.assambra.common.masterserver.entity.UnityRoom;
+import com.assambra.plugin.service.ServerService;
 import com.assambra.plugin.service.UserService;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import com.tvd12.ezyfox.core.annotation.EzyEventHandler;
@@ -12,9 +14,6 @@ import com.tvd12.ezyfoxserver.event.EzyUserLoginEvent;
 import com.tvd12.ezyfoxserver.exception.EzyLoginErrorException;
 import lombok.AllArgsConstructor;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static com.tvd12.ezyfoxserver.constant.EzyEventNames.USER_LOGIN;
 
 @EzySingleton
@@ -23,20 +22,17 @@ import static com.tvd12.ezyfoxserver.constant.EzyEventNames.USER_LOGIN;
 public class UserLoginController extends EzyAbstractPluginEventController<EzyUserLoginEvent> {
 
     private final UserService userService;
-    private final List<String> allowedServerUsernames = Arrays.asList(new String[]{"World", "Chat"});
-
+    private final ServerService serverServicePlugin;
 
     @Override
     public void handle(EzyPluginContext ctx, EzyUserLoginEvent event) {
-        logger.info("{} login in", event.getUsername());
 
         String username = event.getUsername();
         String password = encodePassword(event.getPassword());
+        User user = userService.getUser(username);
 
-        if(!allowedServerUsernames.contains(username))
+        if(!serverServicePlugin.getServerUsernames().contains(username))
         {
-            User user = userService.getUser(username);
-
             if (user == null) {
                 logger.info("User doesn't exist in db, create a new one!");
                 user = userService.createUser(username, password);
@@ -48,6 +44,22 @@ public class UserLoginController extends EzyAbstractPluginEventController<EzyUse
             }
 
             logger.info("user and password match, accept user: {}", username);
+        }
+        else
+        {
+            for(UnityRoom server : serverServicePlugin.getServers())
+            {
+                if(server.getName().equals(username))
+                {
+                    if(server.getPassword().equals(event.getPassword()))
+                        logger.info("Server: {}, logged in", username);
+                    else
+                    {
+                        logger.info("Server: {}, use wrong password", username);
+                        throw new EzyLoginErrorException(EzyLoginError.INVALID_PASSWORD);
+                    }
+                }
+            }
         }
     }
 
