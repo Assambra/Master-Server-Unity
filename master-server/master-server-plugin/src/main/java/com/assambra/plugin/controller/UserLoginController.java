@@ -51,7 +51,7 @@ public class UserLoginController extends EzyAbstractPluginEventController<EzyUse
             {
                 if(server.getName().equals(username))
                 {
-                    if(server.getPassword().equals(event.getPassword()))
+                    if(server.getUserPassword().equals(event.getPassword()))
                         logger.info("Server: {}, logged in", username);
                     else
                     {
