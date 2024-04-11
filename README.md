@@ -7,11 +7,9 @@
 <!-- HEADER -->
 <div align="center">
 <h1>Master-Server-Unity</h1>
-    <!--
     <a href="https://github.com/Assambra">
         <img src="https://github.com/Assambra/Master-Server-Unity/Github/Images/Assambra-Logo-512x512.png" alt="Logo" width="80" height="80">
     </a>
-    -->
 </div>
 
 <!-- LINKS -->
