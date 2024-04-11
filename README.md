@@ -36,6 +36,10 @@
 <ul>
     <li><a href="#foreword">Foreword</a></li>
     <li><a href="#key-features">Key Features</a></li>
+    <li><a href="#server">Server</a></li>
+    <ul>
+        <li><a href="#setup-database">Setup database</a></li>
+    </ul>
     <li><a href="#contact">Contact</a></li>
 </ul>
 
@@ -52,6 +56,44 @@ For the game client we are using [Unity](https://unity.com "Unity") as game engi
 <ul>
 <li></li>
 </ul>
+
+<!-- SETUP DATABASE -->
+### Setup Database
+
+1. Install mongoDB
+2. Open your mongosh
+3. Create your Database
+
+``use master-server``
+
+4. Create a new user and password and give it access to the created database
+
+`db.createUser({user: "root", pwd: "123456",roles: [{role: "readWrite", db:"master-server" }] })`
+
+5. Create a new collection:
+
+`db.createCollection("user", { collation: { locale: 'en_US', strength: 2 } } )`
+`db.user.createIndex( { username: 1 } )`
+
+6. Use this file for the next step
+
+Location: `master-server/master-server-common/src/main/resources/master-server-common-config.properties`
+
+7. Insert the following values for your database and change it to your needs.
+   `database.mongo.uri=mongodb://root:123456@127.0.0.1:27017/master-server`
+   `database.mongo.database=master-server`
+   `database.mongo.collection.naming.case=UNDERSCORE`
+   `database.mongo.collection.naming.ignored_suffix=Entity`
+
+In this example file we use:
+
+user: root
+
+password 123456
+
+database: master-server
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Contact -->
 ## Contact
