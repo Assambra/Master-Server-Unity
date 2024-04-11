@@ -80,10 +80,14 @@ For the game client we are using [Unity](https://unity.com "Unity") as game engi
 Location: `master-server/master-server-common/src/main/resources/master-server-common-config.properties`
 
 7. Insert the following values for your database and change it to your needs.
-   `database.mongo.uri=mongodb://root:123456@127.0.0.1:27017/master-server`
-   `database.mongo.database=master-server`
-   `database.mongo.collection.naming.case=UNDERSCORE`
-   `database.mongo.collection.naming.ignored_suffix=Entity`
+
+`database.mongo.uri=mongodb://root:123456@127.0.0.1:27017/master-server`
+
+`database.mongo.database=master-server`
+
+`database.mongo.collection.naming.case=UNDERSCORE`
+
+`database.mongo.collection.naming.ignored_suffix=Entity`
 
 In this example file we use:
 
