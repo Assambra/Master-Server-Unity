@@ -304,6 +304,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: SceneHandler
       objectReference: {fileID: 0}
+    - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
+      propertyPath: Scenes.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
+      propertyPath: Scenes.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: d4b9f2c7c367d214189fcda705d3a350, type: 2}
+    - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
+      propertyPath: Scenes.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: d109380f08e5e104da2dace2c2efcbdf, type: 2}
+    - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
+      propertyPath: Scenes.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: af8ace169f6f5ef448417549b4819e6e, type: 2}
     - target: {fileID: 2810307544624843601, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

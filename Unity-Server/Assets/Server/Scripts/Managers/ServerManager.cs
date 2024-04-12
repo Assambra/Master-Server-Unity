@@ -44,6 +44,10 @@ namespace Assambra.Server
         {
             switch (_room)
             {
+                case "Newcomer":
+                    GameManager.Instance.ChangeScene(Scenes.Newcomer);
+                    Debug.Log("Change server scene to Newcomer");
+                    break;
                 case "World":
                     GameManager.Instance.ChangeScene(Scenes.World);
                     Debug.Log("Change server scene to World");

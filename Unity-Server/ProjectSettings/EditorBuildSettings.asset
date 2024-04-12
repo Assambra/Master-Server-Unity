@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Server/Scenes/Start.unity
     guid: 38b596616bffc474c91d0475b32ccabd
   - enabled: 1
+    path: Assets/Server/Scenes/Newcomer.unity
+    guid: 32207fdce9d97ec439b3fd591a77ac3a
+  - enabled: 1
     path: Assets/Server/Scenes/World.unity
     guid: 1e255eb426161b243978a9c1906fd757
   - enabled: 1

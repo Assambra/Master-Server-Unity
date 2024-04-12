@@ -23,6 +23,16 @@ public class ServerReadyController
     public void handle(EzyAppContext ctx, EzyServerReadyEvent event) {
         logger.info("Initialize Server: World");
         globalRoomManager.addRoom(world());
+        globalRoomManager.addRoom(newcomer());
+    }
+
+    private UnityRoom newcomer()
+    {
+        return UnityRoom.builder()
+                .id(0)
+                .name("Newcomer")
+                .maxPlayer(10000)
+                .build();
     }
 
     private UnityRoom world()
