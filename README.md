@@ -27,7 +27,7 @@
 </div>
 
 <!-- DEMO IMAGE -->
-![Master Server Diagramm][product-image]
+![Unity-Master-Server][product-image]
 
 <a name="readme-top"></a>
 
@@ -36,10 +36,12 @@
 <ul>
     <li><a href="#foreword">Foreword</a></li>
     <li><a href="#key-features">Key Features</a></li>
-    <li><a href="#server">Server</a></li>
+    <li><a href="#ezyfox-server">EzyFox Server</a></li>
     <ul>
         <li><a href="#setup-database">Setup database</a></li>
     </ul>
+    <li><a href="#unity-server">Unity Server</a></li>
+    <li><a href="#unity-client">Unity Client</a></li>
     <li><a href="#contact">Contact</a></li>
 </ul>
 
@@ -56,6 +58,11 @@ For the game client we are using [Unity](https://unity.com "Unity") as game engi
 <ul>
 <li></li>
 </ul>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- Ezy Fox Server -->
+## EzyFox Server
 
 <!-- SETUP DATABASE -->
 ### Setup Database
@@ -96,6 +103,16 @@ user: root
 password 123456
 
 database: master-server
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- Unity Server -->
+## Unity Server
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- Unity Client -->
+## Unity Client
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
