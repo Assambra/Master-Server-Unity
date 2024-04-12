@@ -27,7 +27,7 @@
 </div>
 
 <!-- DEMO IMAGE -->
-![Our Demo Scene][product-screenshot]
+![Master Server Diagramm][product-image]
 
 <a name="readme-top"></a>
 
@@ -116,6 +116,6 @@ Join us on <a href="https://discord.gg/vjPWk5FSYj">Discord</a>
 [issues-url]: https://github.com/Assambra/Master-Server-Unity/issues
 [license-shield]: https://img.shields.io/github/license/Assambra/Master-Server-Unity.svg?style=for-the-badge
 [license-url]: https://github.com/Assambra/Master-Server-Unity/blob/main/LICENSE
-[product-screenshot]: Github/Images/product.jpg
+[product-image]: Github/Images/Master-Server-Unity.jpg
 [Unity-url]: https://www.unity.com
 [Unity.com]: https://img.shields.io/badge/Unity-000000.svg?style=for-the-badge&logo=unity&logoColor=white
