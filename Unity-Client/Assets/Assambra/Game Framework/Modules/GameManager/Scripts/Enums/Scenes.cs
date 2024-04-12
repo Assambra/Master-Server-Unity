@@ -4,8 +4,10 @@ namespace Assambra.GameFramework.GameManager
     public enum Scenes
     {
         Login = 0,
-        Newcomer = 1,
-        World = 2,
-        BossRoom = 3
+        CreatePlayer = 1,
+        SelectPlayer = 2,
+        Newcomer = 3,
+        World = 4,
+        BossRoom = 5
     }
 }
