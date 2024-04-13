@@ -5,7 +5,6 @@ import com.assambra.common.entity.User;
 import com.assambra.common.repo.CharacterRepo;
 import com.assambra.common.repo.UserRepo;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
-import com.tvd12.ezyfox.database.service.EzyMaxIdService;
 import com.tvd12.ezyfox.util.EzyLoggable;
 import com.tvd12.ezyfoxserver.entity.EzyUser;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,7 @@ public class CharacterService extends EzyLoggable {
 
     private final UserRepo userRepo;
     private final CharacterRepo characterRepo;
-    private final EzyMaxIdService maxIdService;
+    private final MaxIdService maxIdService;
 
     public void createCharacter(EzyUser ezyuser, String name, Long model)
     {
