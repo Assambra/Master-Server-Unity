@@ -9,7 +9,7 @@ import lombok.Data;
 public class Character {
     @EzyId
     Long id;
-    Long accountId;
+    Long userId;
     String name;
     Long modelId;
     Long roomId;
