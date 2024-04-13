@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class UISelectChracter : MonoBehaviour
+namespace Assambra.Client
 {
-    [SerializeField] private GameObject _prefabCharacterElement;
-
-    public void OnButtonPlay()
+    public class UISelectChracter : MonoBehaviour
     {
-        Debug.Log("Button Play clicked");
-    }
+        [SerializeField] private GameObject _prefabCharacterElement;
 
-    public void OnButtonBack()
-    {
-        Debug.Log("Button Back clicked");
+        public void OnButtonPlay()
+        {
+            Debug.Log("Button Play clicked");
+        }
+
+        public void OnButtonBack()
+        {
+            Debug.Log("Button Back clicked");
+        }
     }
 }
