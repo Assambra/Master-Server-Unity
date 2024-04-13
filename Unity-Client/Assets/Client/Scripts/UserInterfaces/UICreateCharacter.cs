@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UICreatePlayer : MonoBehaviour
+public class UICreateCharacter : MonoBehaviour
 {
 
     public void OnButtonCreate()

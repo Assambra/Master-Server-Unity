@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab3f4b749507b684cbd324bccfb596a0, type: 3}
-  m_Name: CreatePlayer
+  m_Name: CreateCharacter
   m_EditorClassIdentifier: 
   UIElementPrefabs:
   - {fileID: 5859696722646493453, guid: 34670155ad50249408f1def1eec0ebf0, type: 3}
