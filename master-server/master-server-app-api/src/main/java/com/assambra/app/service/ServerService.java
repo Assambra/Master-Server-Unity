@@ -1,6 +1,6 @@
 package com.assambra.app.service;
 
-import com.assambra.common.constant.UnityRoomStatus;
+import com.assambra.common.masterserver.constant.UnityRoomStatus;
 import com.assambra.common.masterserver.entity.UnityRoom;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import com.tvd12.ezyfox.util.EzyLoggable;

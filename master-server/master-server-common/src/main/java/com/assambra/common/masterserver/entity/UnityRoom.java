@@ -1,6 +1,6 @@
 package com.assambra.common.masterserver.entity;
 
-import com.assambra.common.constant.UnityRoomStatus;
+import com.assambra.common.masterserver.constant.UnityRoomStatus;
 import com.assambra.common.masterserver.manager.SynchronizedUnityPlayerManager;
 import com.assambra.common.masterserver.server.UnityServer;
 import com.assambra.common.masterserver.util.RandomStringUtil;
