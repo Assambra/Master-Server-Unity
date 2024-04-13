@@ -22,7 +22,7 @@ public class CharacterService extends EzyLoggable {
     private final CharacterRepo characterRepo;
     private final EzyMaxIdService maxIdService;
 
-    public void createCharacter(EzyUser ezyuser, String name, Long modelId)
+    public void createCharacter(EzyUser ezyuser, String name, Long model)
     {
         User user = userRepo.findByField("username", ezyuser.getName());
         Character character = new Character();
@@ -35,7 +35,7 @@ public class CharacterService extends EzyLoggable {
         character.setId(maxIdService.incrementAndGet("character"));
         character.setUserId(user.getId());
         character.setName(name);
-        character.setModelId(modelId);
+        character.setModelId(model);
         character.setRoomId(newcomerRoomId);
         character.setPosition(startPosition);
         character.setRotation(startRotation);
