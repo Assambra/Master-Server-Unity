@@ -1064,7 +1064,7 @@ GameObject:
   - component: {fileID: 4736626967984414418}
   - component: {fileID: 7936306368005512903}
   m_Layer: 0
-  m_Name: CreatePlayer
+  m_Name: CreateCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1516,7 +1516,7 @@ GameObject:
   - component: {fileID: 4807597224594042626}
   - component: {fileID: 3599870424543180084}
   m_Layer: 0
-  m_Name: UICreatePlayer
+  m_Name: UICreateCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1559,3 +1559,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a9557f3f9c82ed409ce6e8352053640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _inputFieldName: {fileID: 5138140688172746274}

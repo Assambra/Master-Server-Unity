@@ -315,11 +315,11 @@ PrefabInstance:
     - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
       propertyPath: Scenes.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 1c9ffd2eef0b37846a5c5cdcfe89fd46, type: 2}
+      objectReference: {fileID: 11400000, guid: 2d4df90e50a1d6149b1371f9db2a331d, type: 2}
     - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
       propertyPath: Scenes.Array.data[2]
       value: 
-      objectReference: {fileID: 11400000, guid: 2d4df90e50a1d6149b1371f9db2a331d, type: 2}
+      objectReference: {fileID: 11400000, guid: 1c9ffd2eef0b37846a5c5cdcfe89fd46, type: 2}
     - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
       propertyPath: Scenes.Array.data[3]
       value: 

@@ -1,5 +1,6 @@
 package com.assambra.app.service;
 
+import com.assambra.app.request.CreateCharacterRequest;
 import com.assambra.common.entity.Character;
 import com.assambra.common.entity.User;
 import com.assambra.common.repo.CharacterRepo;
@@ -21,23 +22,21 @@ public class CharacterService extends EzyLoggable {
     private final CharacterRepo characterRepo;
     private final MaxIdService maxIdService;
 
-    public void createCharacter(EzyUser ezyuser, String name, Long model)
+    public void createCharacter(EzyUser ezyuser, CreateCharacterRequest request)
     {
         User user = userRepo.findByField("username", ezyuser.getName());
         Character character = new Character();
 
-        double[] startPosition = new double[]{0, 0, 0};
-        double[] startRotation = new double[]{0, 0, 0};
-        long newcomerRoomId = 1l;
-
-
         character.setId(maxIdService.incrementAndGet("character"));
         character.setUserId(user.getId());
-        character.setName(name);
-        character.setModelId(model);
-        character.setRoomId(newcomerRoomId);
-        character.setPosition(startPosition);
-        character.setRotation(startRotation);
+        character.setName(request.getName());
+
+        characterRepo.save(character);
+    }
+
+    public Boolean characterExist(String name)
+    {
+        return characterRepo.findByField("name", name) != null;
     }
 
     public List<Character> getAllCharacters(EzyUser ezyuser)

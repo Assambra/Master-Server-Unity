@@ -1,3 +1,4 @@
+using Assambra.GameFramework.GameManager;
 using com.tvd12.ezyfoxserver.client;
 using com.tvd12.ezyfoxserver.client.constant;
 using com.tvd12.ezyfoxserver.client.entity;
@@ -82,12 +83,11 @@ namespace Assambra.Client
             appProxy.send(Commands.CHARACTER_LIST);
         }
 
-        public void CreateCharacterRequest(string name, long model)
+        public void CreateCharacterRequest(string name)
         {
             EzyObject characterdata = EzyEntityFactory
                 .newObjectBuilder()
                 .append("name", name)
-                .append("model", model)
                 .build();
 
             appProxy.send(Commands.CREATE_CHARACTER, characterdata);
@@ -121,7 +121,7 @@ namespace Assambra.Client
         private void AppAccessedResponse(EzyAppProxy proxy, Object data)
         {
             LOGGER.debug("App access successfully");
-            //PlayRequest();
+            GameManager.Instance.ChangeScene(Scenes.CreateCharacter);
         }
 
         #endregion

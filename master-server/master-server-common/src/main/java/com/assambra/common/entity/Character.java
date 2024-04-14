@@ -11,8 +11,4 @@ public class Character {
     Long id;
     Long userId;
     String name;
-    Long modelId;
-    Long roomId;
-    double[] position;
-    double[] rotation;
 }

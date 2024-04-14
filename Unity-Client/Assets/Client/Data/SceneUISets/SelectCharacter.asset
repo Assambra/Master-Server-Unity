@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab3f4b749507b684cbd324bccfb596a0, type: 3}
   m_Name: SelectCharacter
   m_EditorClassIdentifier: 
-  UIElementPrefabs: []
+  UIElementPrefabs:
+  - {fileID: 5859696722646493453, guid: 34670155ad50249408f1def1eec0ebf0, type: 3}
+  - {fileID: 6894233751075530009, guid: 1f907e9cedaa5bb4f8ef1292a01eb6ab, type: 3}
