@@ -45,12 +45,7 @@ public class CharacterService extends EzyLoggable {
     public List<Character> getAllCharacters(EzyUser ezyuser)
     {
         User user = userRepo.findByField("username", ezyuser.getName());
-
-        for(Character c : characterRepo.findListByField("userId", user.getId()))
-        {
-            logger.info("Character: {}", c.getName());
-        }
-
+        
         return characterRepo.findListByField("userId", user.getId());
     }
 
