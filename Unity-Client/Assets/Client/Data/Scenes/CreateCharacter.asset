@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsFirstScene: 0
   scenePaths:
-  - Assets/Client/Scenes/CreatePlayer.unity
+  - Assets/Client/Scenes/CreateCharacter.unity
   SceneUISets:
   - {fileID: 11400000, guid: 4c0173cf65589414db88317f30be6cf9, type: 2}
