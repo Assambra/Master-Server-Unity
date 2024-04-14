@@ -1,5 +1,7 @@
 package com.assambra.app.service;
 
+import com.assambra.app.model.CharacterListModel;
+import com.assambra.app.model.CharacterModel;
 import com.assambra.app.request.CreateCharacterRequest;
 import com.assambra.common.entity.Character;
 import com.assambra.common.entity.User;
@@ -12,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Setter
 @AllArgsConstructor
@@ -43,6 +46,35 @@ public class CharacterService extends EzyLoggable {
     {
         User user = userRepo.findByField("username", ezyuser.getName());
 
+        for(Character c : characterRepo.findListByField("userId", user.getId()))
+        {
+            logger.info("Character: {}", c.getName());
+        }
+
         return characterRepo.findListByField("userId", user.getId());
+    }
+
+    public CharacterListModel getCharacterListModel(EzyUser ezyuser)
+    {
+        List<Character> allCharacters = getAllCharacters(ezyuser);
+
+        List<CharacterModel> characterModel = getCharacterListModel(allCharacters);
+
+        return CharacterListModel.builder()
+                .characters(characterModel)
+                .build();
+    }
+
+    public List<CharacterModel> getCharacterListModel(List<Character> characters)
+    {
+        List<CharacterModel> answer = characters.stream().map(
+                character -> CharacterModel.builder()
+                        .id(character.getId())
+                        .userId(character.getUserId())
+                        .name(character.getName())
+                        .build()
+        ).collect(Collectors.toList());
+
+        return answer;
     }
 }

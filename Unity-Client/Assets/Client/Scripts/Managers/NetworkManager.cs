@@ -6,6 +6,7 @@ using com.tvd12.ezyfoxserver.client.factory;
 using com.tvd12.ezyfoxserver.client.request;
 using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
+using UnityEngine;
 using Object = System.Object;
 
 namespace Assambra.Client
@@ -29,6 +30,8 @@ namespace Assambra.Client
         private new void OnEnable()
         {
             base.OnEnable();
+
+            AddHandler<EzyArray>(Commands.CHARACTER_LIST, CharacterListResponse);
         }
 
         private void Update()
@@ -121,7 +124,23 @@ namespace Assambra.Client
         private void AppAccessedResponse(EzyAppProxy proxy, Object data)
         {
             LOGGER.debug("App access successfully");
+            CharacterListRequest();
             GameManager.Instance.ChangeScene(Scenes.CreateCharacter);
+        }
+
+        private void CharacterListResponse(EzyAppProxy proxy, EzyArray data)
+        {
+            for (int i = 0; i < data.size(); i++)
+            {
+                EzyObject character = data.get<EzyObject>(i);
+
+                CharacterModel characterModel = new CharacterModel(
+                    character.get<long>("id"),
+                    character.get<long>("userId"),
+                    character.get<string>("name"));
+
+                GameManager.Instance.CharacterInfos.Add(characterModel);
+            }
         }
 
         #endregion
