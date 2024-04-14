@@ -125,21 +125,28 @@ namespace Assambra.Client
         {
             LOGGER.debug("App access successfully");
             CharacterListRequest();
-            GameManager.Instance.ChangeScene(Scenes.CreateCharacter);
         }
 
         private void CharacterListResponse(EzyAppProxy proxy, EzyArray data)
         {
-            for (int i = 0; i < data.size(); i++)
+            if (data.isEmpty())
+                GameManager.Instance.ChangeScene(Scenes.CreateCharacter);
+            else
             {
-                EzyObject character = data.get<EzyObject>(i);
+                for (int i = 0; i < data.size(); i++)
+                {
+                    EzyObject character = data.get<EzyObject>(i);
 
-                CharacterModel characterModel = new CharacterModel(
-                    character.get<long>("id"),
-                    character.get<long>("userId"),
-                    character.get<string>("name"));
+                    CharacterModel characterModel = new CharacterModel(
+                        character.get<long>("id"),
+                        character.get<long>("userId"),
+                        character.get<string>("name")
+                        );
 
-                GameManager.Instance.CharacterInfos.Add(characterModel);
+                    GameManager.Instance.CharacterInfos.Add(characterModel);
+                }
+
+                GameManager.Instance.ChangeScene(Scenes.SelectCharacter);
             }
         }
 
