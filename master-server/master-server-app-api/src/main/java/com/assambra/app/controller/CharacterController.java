@@ -56,10 +56,4 @@ public class CharacterController extends EzyLoggable {
             logger.info("User: {}, tried to create new character: {}, but it already exists.", ezyuser.getName(), request.getName());
         }
     }
-
-    @EzyDoHandle(Commands.PLAY)
-    public void play(EzyUser ezyuser)
-    {
-        logger.info("Receive: Commands.PLAY from user: {}", ezyuser.getName());
-    }
 }
