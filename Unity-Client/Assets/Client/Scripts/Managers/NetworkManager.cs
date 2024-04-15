@@ -96,11 +96,11 @@ namespace Assambra.Client
             appProxy.send(Commands.CREATE_CHARACTER, characterdata);
         }
 
-        public void PlayRequest(long characterId)
+        public void PlayRequest(long id)
         {
             EzyObject data = EzyEntityFactory
                 .newObjectBuilder()
-                .append("characterId", characterId)
+                .append("id", id)
                 .build();
 
             appProxy.send(Commands.PLAY, data);

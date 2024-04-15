@@ -1,3 +1,4 @@
+using Assambra.GameFramework.GameManager;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,10 @@ namespace Assambra.Client
 
         private List<GameObject> _characterElements = new List<GameObject>();
 
+        private long _id;
+        private long _userId;
+        private string _name;
+
         private void OnEnable()
         {
             CreateCharacterElements();
@@ -17,12 +22,16 @@ namespace Assambra.Client
 
         public void OnButtonPlay()
         {
-            Debug.Log("Button Play clicked");
+            if (_id > 0 && _userId > 0 && !string.IsNullOrEmpty(_name))
+                NetworkManager.Instance.PlayRequest(_id);
+            else
+                Debug.LogError("You need to select a character!");
         }
+
 
         public void OnButtonBack()
         {
-            Debug.Log("Button Back clicked");
+            GameManager.Instance.ChangeScene(Scenes.CreateCharacter);
         }
 
         private void CreateCharacterElements()
@@ -39,6 +48,10 @@ namespace Assambra.Client
 
         private void HandleCharacterSelection(CharacterModel character)
         {
+            _id = character.Id;
+            _userId = character.UserId;
+            _name = character.Name;
+
             Debug.Log("Selected Character: " + character.Name);
         }
     }

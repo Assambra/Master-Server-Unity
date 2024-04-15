@@ -152,7 +152,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8428082325045766430
 RectTransform:
   m_ObjectHideFlags: 0
@@ -489,8 +489,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UICreatePlayer, Assambra.Client
+      - m_Target: {fileID: 5794640921393762868}
+        m_TargetAssemblyTypeName: Assambra.Client.UISelectCharacter, Assambra.Client
         m_MethodName: OnButtonBack
         m_Mode: 1
         m_Arguments:
@@ -658,9 +658,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UICreatePlayer, Assambra.Client
-        m_MethodName: OnButtonCreate
+      - m_Target: {fileID: 5794640921393762868}
+        m_TargetAssemblyTypeName: Assambra.Client.UISelectCharacter, Assambra.Client
+        m_MethodName: OnButtonPlay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -761,7 +761,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6354786363146217700
 CanvasRenderer:
