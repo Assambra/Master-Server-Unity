@@ -7,7 +7,6 @@ import com.assambra.app.request.CreateCharacterRequest;
 import com.assambra.app.service.CharacterService;
 import com.tvd12.ezyfox.core.annotation.EzyDoHandle;
 import com.tvd12.ezyfox.core.annotation.EzyRequestController;
-import com.tvd12.ezyfox.entity.EzyArray;
 import com.tvd12.ezyfox.util.EzyLoggable;
 import com.tvd12.ezyfoxserver.entity.EzyUser;
 import com.tvd12.ezyfoxserver.support.factory.EzyResponseFactory;
@@ -43,24 +42,24 @@ public class CharacterController extends EzyLoggable {
     }
 
     @EzyDoHandle(Commands.CREATE_CHARACTER)
-    public void createCharacter(EzyUser user, CreateCharacterRequest request)
+    public void createCharacter(EzyUser ezyuser, CreateCharacterRequest request)
     {
-        logger.info("Receive: Commands.CREATE_CHARACTER from user: {}", user.getName());
+        logger.info("Receive: Commands.CREATE_CHARACTER from user: {}", ezyuser.getName());
 
         if(!characterService.characterExist(request.getName()))
         {
-            logger.info("User: {}, successfully create new character: {}", user.getName(), request.getName());
-            characterService.createCharacter(user, request);
+            logger.info("User: {}, successfully create new character: {}", ezyuser.getName(), request.getName());
+            characterService.createCharacter(ezyuser, request);
         }
         else
         {
-            logger.info("User: {}, tried to create new character: {}, but it already exists.", user.getName(), request.getName());
+            logger.info("User: {}, tried to create new character: {}, but it already exists.", ezyuser.getName(), request.getName());
         }
     }
 
     @EzyDoHandle(Commands.PLAY)
-    public void play(EzyUser user)
+    public void play(EzyUser ezyuser)
     {
-        logger.info("Receive: Commands.PLAY from user: {}", user.getName());
+        logger.info("Receive: Commands.PLAY from user: {}", ezyuser.getName());
     }
 }
