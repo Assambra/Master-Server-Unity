@@ -97,7 +97,7 @@ The client makes a request to the master server, which forwards the request to t
 
 `db.character.createIndex( { name: 1 } )`
 
-`db.createCollection("characterLocation", { collation: { locale: 'en_US', strength: 2 } } )`
+`db.createCollection("character_location", { collation: { locale: 'en_US', strength: 2 } } )`
 
 6. Use this file for the next step
 
