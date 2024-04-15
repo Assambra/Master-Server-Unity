@@ -28,7 +28,7 @@ public class CharacterService extends EzyLoggable {
     private final UserRepo userRepo;
     private final CharacterRepo characterRepo;
     private final CharacterLocationRepo characterLocationRepo;
-    
+
     public Character getCharacter(Long id)
     {
         return characterRepo.findById(id);
@@ -45,7 +45,7 @@ public class CharacterService extends EzyLoggable {
         characterRepo.save(character);
 
         CharacterLocation characterLocation = new CharacterLocation();
-        characterLocation.setCharacterId(maxIdService.incrementAndGet("characterLocation"));
+        characterLocation.setId(maxIdService.incrementAndGet("characterLocation"));
         characterLocation.setCharacterId(character.getId());
         characterLocation.setRoomName(GameConstant.START_SCENE);
         characterLocation.setPosition(GameConstant.START_POSITION);
