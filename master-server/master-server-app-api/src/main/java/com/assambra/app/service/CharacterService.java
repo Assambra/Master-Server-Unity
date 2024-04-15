@@ -1,10 +1,13 @@
 package com.assambra.app.service;
 
+import com.assambra.app.constant.GameConstant;
 import com.assambra.app.model.CharacterListModel;
 import com.assambra.app.model.CharacterModel;
 import com.assambra.app.request.CreateCharacterRequest;
 import com.assambra.common.entity.Character;
+import com.assambra.common.entity.CharacterLocation;
 import com.assambra.common.entity.User;
+import com.assambra.common.repo.CharacterLocationRepo;
 import com.assambra.common.repo.CharacterRepo;
 import com.assambra.common.repo.UserRepo;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
@@ -21,20 +24,33 @@ import java.util.stream.Collectors;
 @EzySingleton("characterService")
 public class CharacterService extends EzyLoggable {
 
+    private final MaxIdService maxIdService;
     private final UserRepo userRepo;
     private final CharacterRepo characterRepo;
-    private final MaxIdService maxIdService;
+    private final CharacterLocationRepo characterLocationRepo;
+    
+    public Character getCharacter(Long id)
+    {
+        return characterRepo.findById(id);
+    }
 
     public void createCharacter(EzyUser ezyuser, CreateCharacterRequest request)
     {
         User user = userRepo.findByField("username", ezyuser.getName());
-        Character character = new Character();
 
+        Character character = new Character();
         character.setId(maxIdService.incrementAndGet("character"));
         character.setUserId(user.getId());
         character.setName(request.getName());
-
         characterRepo.save(character);
+
+        CharacterLocation characterLocation = new CharacterLocation();
+        characterLocation.setCharacterId(maxIdService.incrementAndGet("characterLocation"));
+        characterLocation.setCharacterId(character.getId());
+        characterLocation.setRoomName(GameConstant.START_SCENE);
+        characterLocation.setPosition(GameConstant.START_POSITION);
+        characterLocation.setRotation(GameConstant.START_ROTATION);
+        characterLocationRepo.save(characterLocation);
     }
 
     public Boolean characterExist(String name)

@@ -87,7 +87,7 @@ The client makes a request to the master server, which forwards the request to t
 
 `db.createUser({user: "root", pwd: "123456",roles: [{role: "readWrite", db:"master-server" }] })`
 
-5. Create two new collections:
+5. Create the following collections:
 
 `db.createCollection("user", { collation: { locale: 'en_US', strength: 2 } } )`
 
@@ -96,6 +96,8 @@ The client makes a request to the master server, which forwards the request to t
 `db.createCollection("character", { collation: { locale: 'en_US', strength: 2 } } )`
 
 `db.character.createIndex( { name: 1 } )`
+
+`db.createCollection("characterLocation", { collation: { locale: 'en_US', strength: 2 } } )`
 
 6. Use this file for the next step
 
