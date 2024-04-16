@@ -5,6 +5,7 @@ import com.assambra.app.request.PlayRequest;
 import com.assambra.app.service.CharacterService;
 import com.assambra.common.entity.Character;
 import com.assambra.common.entity.CharacterLocation;
+import com.assambra.common.masterserver.entity.UnityPlayer;
 import com.tvd12.ezyfox.core.annotation.EzyDoHandle;
 import com.tvd12.ezyfox.core.annotation.EzyRequestController;
 import com.tvd12.ezyfox.util.EzyLoggable;
@@ -27,6 +28,19 @@ public class GameController extends EzyLoggable {
         Character character = characterService.getCharacter(request.getId());
         CharacterLocation characterLocation = characterService.getCharacterLocation(character.getId());
 
+        // We need RoomService to add the player to the static room
+
+        /*
+        UnityPlayer player = UnityPlayer.builder()
+                .name(character.getName())
+                // Maybe extend UnityPlayer if we need more information
+                .build();
+
+        */
+        /*
+        Long roomId = roomService.getRoomId(characterLocation.getRoomName());
+        player.setCurrentRoomId(roomId);
+        /*
         //Send to Player -> Spawn
         /*
         responseFactory.newObjectResponse(
