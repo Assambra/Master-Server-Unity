@@ -13,18 +13,25 @@ import lombok.Setter;
 import java.io.IOException;
 
 public class UnityRoom extends NormalRoom {
+    @Getter
+    protected final boolean isStatic;
+
+    @Getter @Setter
+    protected boolean isReady = false;
     protected final UnityServer unityServer;
+
     @Getter
     protected final String userPassword;
+
     @Getter
     protected Process unityProcess;
-    @Getter
-    @Setter
+
+    @Getter @Setter
     protected UnityPlayer master;
 
     public UnityRoom(Builder builder) {
         super(builder);
-
+        this.isStatic = builder.isStatic;
         this.status = UnityRoomStatus.NONE;
         this.userPassword = RandomStringUtil.getAlphaNumericString(6);
 
@@ -42,8 +49,12 @@ public class UnityRoom extends NormalRoom {
         }
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public void markAsReady() {
+        this.setReady(true);
+    }
+
+    public static Builder builder(boolean isStatic) {
+        return new Builder(isStatic);
     }
 
     @SuppressWarnings("unchecked")
@@ -66,6 +77,11 @@ public class UnityRoom extends NormalRoom {
     }
 
     public static class Builder extends NormalRoom.Builder<Builder> {
+        protected boolean isStatic;
+
+        public Builder (boolean isStatic) {
+            this.isStatic = isStatic;
+        }
 
         protected int maxPlayer = 999;
 

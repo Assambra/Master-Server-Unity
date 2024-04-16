@@ -21,6 +21,6 @@ public class ServerController extends EzyLoggable {
     public void serverReady(EzyUser user)
     {
         logger.info("Receive Commands.SERVER_READY from Server: {}", user.getName());
-        serverService.setServerStatus(user, UnityRoomStatus.READY);
+        serverService.setServerReady(user);
     }
 }

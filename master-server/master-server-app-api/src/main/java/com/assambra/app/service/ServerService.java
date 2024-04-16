@@ -18,6 +18,18 @@ public class ServerService extends EzyLoggable {
 
     private final RoomManager<UnityRoom> globalRoomManager;
 
+    public void setServerReady(EzyUser user)
+    {
+        for(UnityRoom room : globalRoomManager.getRoomList())
+        {
+            if(room.getName().equals(user.getName()))
+            {
+                logger.info("Set room: {} to ready", room.getName());
+                room.setReady(true);
+            }
+        }
+    }
+
     public void setServerStatus(EzyUser user, UnityRoomStatus status)
     {
         for(UnityRoom room : globalRoomManager.getRoomList())
@@ -29,6 +41,7 @@ public class ServerService extends EzyLoggable {
             }
         }
     }
+
 
     public List<UnityRoom> getServers()
     {

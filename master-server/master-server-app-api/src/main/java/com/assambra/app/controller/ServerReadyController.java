@@ -29,7 +29,7 @@ public class ServerReadyController
 
     private UnityRoom newcomer()
     {
-        return UnityRoom.builder()
+        return UnityRoom.builder(true)
                 .id(1)
                 .name("Newcomer")
                 .maxPlayer(10000)
@@ -38,7 +38,7 @@ public class ServerReadyController
 
     private UnityRoom world()
     {
-        return UnityRoom.builder()
+        return UnityRoom.builder(true)
                 .id(2)
                 .name("World")
                 .maxPlayer(10000)
