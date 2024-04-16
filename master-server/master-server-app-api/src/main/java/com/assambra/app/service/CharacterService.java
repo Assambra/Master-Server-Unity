@@ -88,4 +88,9 @@ public class CharacterService extends EzyLoggable {
 
         return answer;
     }
+
+    public CharacterLocation getCharacterLocation(Long characterId)
+    {
+        return characterLocationRepo.findByField("characterId", characterId);
+    }
 }
