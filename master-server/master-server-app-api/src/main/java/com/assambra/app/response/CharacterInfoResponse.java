@@ -7,9 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @EzyObjectBinding
-public class CharacterResponse {
+public class CharacterInfoResponse {
     private Long id;
-    private Long userId;
     private String name;
-    private String username;
 }

@@ -2,7 +2,7 @@ package com.assambra.app.controller;
 
 import com.assambra.app.constant.Commands;
 import com.assambra.app.converter.ModelToResponseConverter;
-import com.assambra.app.model.CharacterListModel;
+import com.assambra.app.model.CharacterInfoListModel;
 import com.assambra.app.request.CreateCharacterRequest;
 import com.assambra.app.service.CharacterService;
 import com.tvd12.ezyfox.core.annotation.EzyDoHandle;
@@ -27,13 +27,13 @@ public class CharacterController extends EzyLoggable {
     {
         logger.info("Receive: Commands.CHARACTER_LIST from user: {}", ezyuser.getName());
 
-        CharacterListModel characterListModel = characterService.getCharacterListModel(ezyuser);
+        CharacterInfoListModel characterInfoListModel = characterService.getCharacterInfoListModel(ezyuser);
 
         responseFactory.newArrayResponse()
                 .command(Commands.CHARACTER_LIST)
                 .data(
                         newArrayList(
-                                characterListModel.getCharacters(),
+                                characterInfoListModel.getCharacters(),
                                 modelToResponseConverter::toResponse
                         )
                 )

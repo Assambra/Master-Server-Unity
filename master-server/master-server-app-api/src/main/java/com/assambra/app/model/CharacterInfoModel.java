@@ -5,9 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CharacterModel {
+public class CharacterInfoModel {
     private Long id;
-    private Long userId;
     private String name;
-    private String username;
 }

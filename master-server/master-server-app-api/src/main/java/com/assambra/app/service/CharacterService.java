@@ -1,6 +1,8 @@
 package com.assambra.app.service;
 
 import com.assambra.app.constant.GameConstant;
+import com.assambra.app.model.CharacterInfoListModel;
+import com.assambra.app.model.CharacterInfoModel;
 import com.assambra.app.model.CharacterListModel;
 import com.assambra.app.model.CharacterModel;
 import com.assambra.app.request.CreateCharacterRequest;
@@ -42,6 +44,7 @@ public class CharacterService extends EzyLoggable {
         character.setId(maxIdService.incrementAndGet("character"));
         character.setUserId(user.getId());
         character.setName(request.getName());
+        character.setUsername(user.getUsername());
         characterRepo.save(character);
 
         CharacterLocation characterLocation = new CharacterLocation();
@@ -63,6 +66,29 @@ public class CharacterService extends EzyLoggable {
         User user = userRepo.findByField("username", ezyuser.getName());
 
         return characterRepo.findListByField("userId", user.getId());
+    }
+
+    public CharacterInfoListModel getCharacterInfoListModel(EzyUser ezyuser)
+    {
+        List<Character> allCharacters = getAllCharacters(ezyuser);
+
+        List<CharacterInfoModel> characterInfoModel = getCharacterInfoListModel(allCharacters);
+
+        return CharacterInfoListModel.builder()
+                .characters(characterInfoModel)
+                .build();
+    }
+
+    public List<CharacterInfoModel> getCharacterInfoListModel(List<Character> characters)
+    {
+        List<CharacterInfoModel> answer = characters.stream().map(
+                character -> CharacterInfoModel.builder()
+                        .id(character.getId())
+                        .name(character.getName())
+                        .build()
+        ).collect(Collectors.toList());
+
+        return answer;
     }
 
     public CharacterListModel getCharacterListModel(EzyUser ezyuser)

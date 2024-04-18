@@ -7,6 +7,6 @@ import java.util.List;
 
 @Getter
 @Builder
-public class CharacterListModel {
-    private List<CharacterModel> characters;
+public class CharacterInfoListModel {
+    private List<CharacterInfoModel> characters;
 }

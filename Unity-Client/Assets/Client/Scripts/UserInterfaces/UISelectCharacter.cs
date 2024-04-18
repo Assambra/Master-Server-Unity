@@ -12,8 +12,6 @@ namespace Assambra.Client
         private List<GameObject> _characterElements = new List<GameObject>();
 
         private long _id;
-        private long _userId;
-        private string _name;
 
         private void OnEnable()
         {
@@ -22,7 +20,7 @@ namespace Assambra.Client
 
         public void OnButtonPlay()
         {
-            if (_id > 0 && _userId > 0 && !string.IsNullOrEmpty(_name))
+            if (_id > 0)
                 NetworkManager.Instance.PlayRequest(_id);
             else
                 Debug.LogError("You need to select a character!");
@@ -49,10 +47,6 @@ namespace Assambra.Client
         private void HandleCharacterSelection(CharacterModel character)
         {
             _id = character.Id;
-            _userId = character.UserId;
-            _name = character.Name;
-
-            Debug.Log("Selected Character: " + character.Name);
         }
     }
 }

@@ -139,7 +139,6 @@ namespace Assambra.Client
 
                     CharacterModel characterModel = new CharacterModel(
                         character.get<long>("id"),
-                        character.get<long>("userId"),
                         character.get<string>("name")
                         );
 

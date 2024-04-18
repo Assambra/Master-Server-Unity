@@ -11,4 +11,5 @@ public class Character {
     Long id;
     Long userId;
     String name;
+    String username;
 }

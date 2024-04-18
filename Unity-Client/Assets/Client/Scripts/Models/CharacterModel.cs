@@ -3,17 +3,19 @@ namespace Assambra.Client
     public class CharacterModel
     {
         public long Id { get => _id; }
-        public long UserId { get => _userId; }
         public string Name { get => _name; }
+        public bool IsLocalPlayer { get => _isLocalPlayer; set => _isLocalPlayer = value; }
+        public string Room { get => _room; set => _room = value; }
+        
 
         private long _id;
-        private long _userId;
         private string _name;
+        private bool _isLocalPlayer;
+        private string _room;
 
-        public CharacterModel(long id, long userId, string name)
+        public CharacterModel(long id, string name)
         {
             this._id = id;
-            this._userId = userId;
             this._name = name;
         }
     }
