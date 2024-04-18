@@ -72,14 +72,14 @@ public class CharacterService extends EzyLoggable {
     {
         List<Character> allCharacters = getAllCharacters(ezyuser);
 
-        List<CharacterInfoModel> characterInfoModel = getCharacterInfoListModel(allCharacters);
+        List<CharacterInfoModel> characterInfoModel = getListCharacterInfoModel(allCharacters);
 
         return CharacterInfoListModel.builder()
                 .characters(characterInfoModel)
                 .build();
     }
 
-    public List<CharacterInfoModel> getCharacterInfoListModel(List<Character> characters)
+    public List<CharacterInfoModel> getListCharacterInfoModel(List<Character> characters)
     {
         List<CharacterInfoModel> answer = characters.stream().map(
                 character -> CharacterInfoModel.builder()
@@ -95,14 +95,14 @@ public class CharacterService extends EzyLoggable {
     {
         List<Character> allCharacters = getAllCharacters(ezyuser);
 
-        List<CharacterModel> characterModel = getCharacterListModel(allCharacters);
+        List<CharacterModel> characterModel = getListCharacterModel(allCharacters);
 
         return CharacterListModel.builder()
                 .characters(characterModel)
                 .build();
     }
 
-    public List<CharacterModel> getCharacterListModel(List<Character> characters)
+    public List<CharacterModel> getListCharacterModel(List<Character> characters)
     {
         List<CharacterModel> answer = characters.stream().map(
                 character -> CharacterModel.builder()
