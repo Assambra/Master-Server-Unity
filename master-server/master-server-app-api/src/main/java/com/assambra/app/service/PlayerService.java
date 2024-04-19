@@ -31,7 +31,7 @@ public class PlayerService extends EzyLoggable {
      * or "UnityPlayer player.getName())" name. It takes a {@code String} parameter name;
      *
      * @param name
-     *        Character "character.getName()" or "UnityPlayer player.getName() but we search here for a UnityPlayer object so we don't know about the player.getName()"
+     *        Character "character.getName()" or "UnityPlayer player.getName()"
      *
      * @return A UnityPlayer object if found else returns {@code NULL}
      */
