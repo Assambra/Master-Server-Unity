@@ -3,8 +3,7 @@ package com.assambra.app.controller;
 import com.assambra.app.constant.Commands;
 import com.assambra.app.request.PlayRequest;
 import com.assambra.app.service.CharacterService;
-import com.assambra.app.service.GameService;
-import com.assambra.app.service.ServerService;
+import com.assambra.app.service.PlayerService;
 import com.assambra.common.entity.Character;
 import com.assambra.common.entity.CharacterLocation;
 import com.assambra.common.masterserver.entity.UnityPlayer;
@@ -21,7 +20,8 @@ public class GameController extends EzyLoggable {
 
     private final EzyResponseFactory responseFactory;
     private final CharacterService characterService;
-    private final GameService gameService;
+    private final PlayerService playerService;
+
     @EzyDoHandle(Commands.PLAY)
     public void play(EzyUser ezyuser, PlayRequest request)
     {
@@ -31,7 +31,8 @@ public class GameController extends EzyLoggable {
         CharacterLocation characterLocation = characterService.getCharacterLocation(character.getId());
 
         UnityPlayer player = new UnityPlayer(character.getName());
-        gameService.addPlayerToGlobalPlayerList(player);
+        player.setUsername(ezyuser.getName());
+        playerService.addPlayerToGlobalPlayerList(player);
 
         /*
         Long roomId = roomService.getRoomId(characterLocation.getRoomName());

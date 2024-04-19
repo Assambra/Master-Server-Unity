@@ -12,15 +12,4 @@ import lombok.Setter;
 @EzySingleton("gameService")
 public class GameService extends EzyLoggable {
 
-    private final PlayerManager globalPlayerManager;
-
-    public void addPlayerToGlobalPlayerList(UnityPlayer player)
-    {
-        globalPlayerManager.addPlayer(player);
-    }
-
-    public void removePlayerFromGlobalPlayerList(UnityPlayer player)
-    {
-        globalPlayerManager.removePlayer(player);
-    }
 }
