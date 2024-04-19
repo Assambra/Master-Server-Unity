@@ -26,12 +26,32 @@ public class PlayerService extends EzyLoggable {
         globalPlayerManager.removePlayer(player);
     }
 
-    public UnityPlayer getPlayerByName(String name)
+    /**
+     * This method found a UnityPlayer in the globalPlayerList by its "Character character.getName()" name
+     * or "UnityPlayer player.getName())" name. It takes a {@code String} parameter name;
+     *
+     * @param name
+     *        Character "character.getName()" or "UnityPlayer player.getName() but we search here for a UnityPlayer object so we don't know about the player.getName()"
+     *
+     * @return A UnityPlayer object if found else returns {@code NULL}
+     */
+
+    public UnityPlayer getPlayerByNameFromGlobalPlayerManager(String name)
     {
         return (UnityPlayer) globalPlayerManager.getPlayer(name);
     }
 
-    public UnityPlayer getPlayerByUsername(String username) {
+    /**
+     * This method found a UnityPlayer in the globalPlayerList by its "EzyUser ezyuser.getName()" username
+     * or "User user.getUsername" username. It takes a username as {@code String}
+     *
+     * @param username
+     *        "EzyUser ezyuser.getName()" or "User user.getUsername"
+     *
+     * @return A UnityPlayer object if found else returns {@code NULL}
+     */
+
+    public UnityPlayer getPlayerByUsernameFromGlobalPlayerManager(String username) {
         List<UnityPlayer> players = globalPlayerManager.getPlayerList();
         return players.stream()
                 .filter(p -> p.getUsername().equals(username))
