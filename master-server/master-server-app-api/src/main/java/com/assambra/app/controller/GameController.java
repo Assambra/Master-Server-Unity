@@ -3,6 +3,8 @@ package com.assambra.app.controller;
 import com.assambra.app.constant.Commands;
 import com.assambra.app.request.PlayRequest;
 import com.assambra.app.service.CharacterService;
+import com.assambra.app.service.GameService;
+import com.assambra.app.service.ServerService;
 import com.assambra.common.entity.Character;
 import com.assambra.common.entity.CharacterLocation;
 import com.assambra.common.masterserver.entity.UnityPlayer;
@@ -19,7 +21,7 @@ public class GameController extends EzyLoggable {
 
     private final EzyResponseFactory responseFactory;
     private final CharacterService characterService;
-
+    private final GameService gameService;
     @EzyDoHandle(Commands.PLAY)
     public void play(EzyUser ezyuser, PlayRequest request)
     {
@@ -28,15 +30,9 @@ public class GameController extends EzyLoggable {
         Character character = characterService.getCharacter(request.getId());
         CharacterLocation characterLocation = characterService.getCharacterLocation(character.getId());
 
-        // We need RoomService to add the player to the static room
+        UnityPlayer player = new UnityPlayer(character.getName());
+        gameService.addPlayerToGlobalPlayerList(player);
 
-        /*
-        UnityPlayer player = UnityPlayer.builder()
-                .name(character.getName())
-                // Maybe extend UnityPlayer if we need more information
-                .build();
-
-        */
         /*
         Long roomId = roomService.getRoomId(characterLocation.getRoomName());
         player.setCurrentRoomId(roomId);
