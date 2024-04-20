@@ -32,6 +32,7 @@ namespace Assambra.Client
             base.OnEnable();
 
             AddHandler<EzyArray>(Commands.CHARACTER_LIST, CharacterListResponse);
+            AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
         }
 
         private void Update()
@@ -137,7 +138,7 @@ namespace Assambra.Client
                 {
                     EzyObject character = data.get<EzyObject>(i);
 
-                    CharacterModel characterModel = new CharacterModel(
+                    PlayerModel characterModel = new PlayerModel(
                         character.get<long>("id"),
                         character.get<string>("name")
                         );
@@ -149,6 +150,32 @@ namespace Assambra.Client
             }
         }
 
+        private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
+        {
+            LOGGER.debug("Receive PLAYER_SPAWN request");
+            long id = data.get<long>("id");
+            string name = data.get<string>("name");
+            bool isLocalPlayer = data.get<bool>("isLocalPlayer");
+            string roomName = data.get<string>("roomName");
+            EzyArray position = data.get<EzyArray>("position");
+            EzyArray rotation = data.get<EzyArray>("rotation");
+            Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
+            Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
+
+            Scenes scenes = GameManager.Instance.getScenesByName(roomName);
+            GameManager.Instance.ChangeScene(scenes);
+
+            GameObject playerGameObject = GameManager.Instance.CreatePlayer(pos, rot);
+
+            PlayerModel playerModel = new PlayerModel(id, name);
+            playerModel.PlayerGameObject = playerGameObject;
+            playerModel.IsLocalPlayer = isLocalPlayer;
+            playerModel.RoomName = roomName;
+            playerModel.Position = pos;
+            playerModel.Rotation = rot;
+
+            GameManager.Instance.PlayerList.Add(playerModel);
+        }
         #endregion
     }
 }

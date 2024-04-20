@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab3f4b749507b684cbd324bccfb596a0, type: 3}
   m_Name: Newcomer
   m_EditorClassIdentifier: 
-  UIElementPrefabs:
-  - {fileID: 0}
+  UIElementPrefabs: []

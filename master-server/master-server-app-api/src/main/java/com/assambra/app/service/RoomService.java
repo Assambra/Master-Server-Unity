@@ -2,6 +2,7 @@ package com.assambra.app.service;
 
 import com.assambra.app.constant.Commands;
 import com.assambra.app.converter.ModelToResponseConverter;
+import com.assambra.app.model.ClientPlayerSpawnModel;
 import com.assambra.app.model.ServerPlayerSpawnModel;
 import com.assambra.common.masterserver.entity.UnityPlayer;
 import com.assambra.common.masterserver.entity.UnityRoom;
@@ -29,15 +30,21 @@ public class RoomService extends EzyLoggable {
         return (UnityRoom)globalRoomManager.getRoom(id);
     }
 
-    public void addPlayerToRoom(UnityPlayer player, String roomName, ServerPlayerSpawnModel model)
+    public void addPlayerToRoom(UnityPlayer player, String roomName, ServerPlayerSpawnModel serverModel, ClientPlayerSpawnModel clientModel)
     {
-        modelToResponseConverter.toResponse(model)
-                .command(Commands.SERVER_PLAYER_SPAWN)
+        UnityRoom room = getRoom(roomName);
+        room.addPlayer(player);
+
+        modelToResponseConverter.toResponse(serverModel)
+                .command(Commands.PLAYER_SPAWN)
                 .username(roomName)
                 .execute();
 
-        UnityRoom room = getRoom(roomName);
-        room.addPlayer(player);
+        modelToResponseConverter.toResponse(clientModel)
+                .command(Commands.PLAYER_SPAWN)
+                .username(player.getUsername())
+                .execute();
+
     }
 
     public void removePlayerFromRoom(UnityPlayer player)

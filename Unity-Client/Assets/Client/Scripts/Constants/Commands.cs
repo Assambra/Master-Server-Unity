@@ -7,6 +7,7 @@ namespace Assambra.Client
         public const String CHARACTER_LIST = "characterList";
         public const String CREATE_CHARACTER = "createCharacter";
         public const String PLAY = "play";
+        public const String PLAYER_SPAWN = "playerSpawn";
 
         private Commands() { }
     }

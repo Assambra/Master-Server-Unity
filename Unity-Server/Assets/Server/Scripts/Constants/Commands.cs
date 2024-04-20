@@ -9,7 +9,7 @@ namespace Assambra.Server
     {
         public const String SERVER_READY = "serverReady";
         public const String SERVER_STOP = "serverStop";
-        public const String SERVER_PLAYER_SPAWN = "serverPlayerSpawn";
+        public const String PLAYER_SPAWN = "playerSpawn";
 
         private Commands() { }
     }

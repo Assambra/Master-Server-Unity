@@ -11,9 +11,9 @@ namespace Assambra.Client
         [SerializeField] private TMP_Text _textName;
         [SerializeField] private TMP_Text _textLocation;
 
-        private CharacterModel _characterModel;
+        private PlayerModel _characterModel;
 
-        public void Initialize(CharacterModel characterModel, Action<CharacterModel> onButtonClickAction)
+        public void Initialize(PlayerModel characterModel, Action<PlayerModel> onButtonClickAction)
         {
             _characterModel = characterModel;
             _button.onClick.AddListener(() => onButtonClickAction(_characterModel));

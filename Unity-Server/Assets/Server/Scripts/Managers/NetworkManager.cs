@@ -29,7 +29,7 @@ namespace Assambra.Server
         {
             base.OnEnable();
             AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequest);
-            AddHandler<EzyObject>(Commands.SERVER_PLAYER_SPAWN, ServerPlayerSpawnRequest);
+            AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
         }
 
         private void Update()
@@ -115,9 +115,9 @@ namespace Assambra.Server
             Application.Quit();
         }
 
-        private void ServerPlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
+        private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
         {
-            LOGGER.debug("Receive SERVER_PLAYER_SPAWN request");
+            LOGGER.debug("Receive PLAYER_SPAWN request");
 
             string username = data.get<string>("username");
             EzyArray position = data.get<EzyArray>("position");

@@ -1,9 +1,6 @@
 package com.assambra.app.converter;
 
-import com.assambra.app.model.CharacterInfoListModel;
-import com.assambra.app.model.CharacterInfoModel;
-import com.assambra.app.model.CharacterModel;
-import com.assambra.app.model.ServerPlayerSpawnModel;
+import com.assambra.app.model.*;
 import com.assambra.app.response.CharacterInfoResponse;
 import com.assambra.app.response.CharacterResponse;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
@@ -29,6 +26,17 @@ public class ModelToResponseConverter {
     {
         return responseFactory.newObjectResponse()
                 .param("username", model.getUsername())
+                .param("position", model.getPosition())
+                .param("rotation", model.getRotation());
+    }
+
+    public EzyObjectResponse toResponse(ClientPlayerSpawnModel model)
+    {
+        return responseFactory.newObjectResponse()
+                .param("id", model.getId())
+                .param("username", model.getName())
+                .param("isLocalPlayer", model.isLocalPlayer())
+                .param("roomName", model.getRoomName())
                 .param("position", model.getPosition())
                 .param("rotation", model.getRotation());
     }

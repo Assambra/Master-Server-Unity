@@ -2,6 +2,7 @@ package com.assambra.app.controller;
 
 import com.assambra.app.constant.Commands;
 import com.assambra.app.converter.ModelToResponseConverter;
+import com.assambra.app.model.ClientPlayerSpawnModel;
 import com.assambra.app.model.ServerPlayerSpawnModel;
 import com.assambra.app.request.PlayRequest;
 import com.assambra.app.service.CharacterService;
@@ -40,18 +41,9 @@ public class GameController extends EzyLoggable {
         player.setUsername(ezyuser.getName());
         playerService.addPlayerToGlobalPlayerList(player);
 
-        ServerPlayerSpawnModel serverSpawnModel =  playerService.getServerSpawnModel(character, characterLocation);
+        ServerPlayerSpawnModel serverPlayerSpawnModel =  playerService.getServerSpawnModel(character, characterLocation);
+        ClientPlayerSpawnModel clientPlayerSpawnModel = playerService.getClientSpawnModel(character, characterLocation);
 
-        roomService.addPlayerToRoom(player, characterLocation.getRoomName(), serverSpawnModel);
-
-        /* Todo
-        //Send to Player -> Spawn
-        responseFactory.newObjectResponse(
-                .command(Commands.SPAWN)
-                //params or array, roomName, position, rotation, (maybe isLocalPlayer = true, not sure at the moment)
-                .user(ezyuser)
-                .execute();
-        )
-        */
+        roomService.addPlayerToRoom(player, characterLocation.getRoomName(), serverPlayerSpawnModel, clientPlayerSpawnModel);
     }
 }
