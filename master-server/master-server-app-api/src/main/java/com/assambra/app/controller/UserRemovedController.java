@@ -1,6 +1,7 @@
 package com.assambra.app.controller;
 
 import com.assambra.app.service.PlayerService;
+import com.assambra.app.service.RoomService;
 import com.assambra.common.masterserver.entity.UnityPlayer;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import com.tvd12.ezyfox.core.annotation.EzyEventHandler;
@@ -21,6 +22,7 @@ public class UserRemovedController extends EzyAbstractAppEventController<EzyUser
 
     private final PlayerManager globalPlayerManager;
     private final PlayerService playerService;
+    private final RoomService roomService;
 
     @Override
     public void handle(EzyAppContext ctx, EzyUserRemovedEvent event) {
@@ -30,7 +32,10 @@ public class UserRemovedController extends EzyAbstractAppEventController<EzyUser
         for(UnityPlayer player : players)
         {
             if(player.getUsername().equals(event.getUser().getName()));
+            {
+                roomService.removePlayerFromRoom(player);
                 playerService.removePlayerFromGlobalPlayerList(player);
+            }
         }
     }
 }

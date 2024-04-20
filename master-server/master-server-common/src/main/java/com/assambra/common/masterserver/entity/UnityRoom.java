@@ -4,6 +4,7 @@ import com.assambra.common.masterserver.constant.UnityRoomStatus;
 import com.assambra.common.masterserver.manager.SynchronizedUnityPlayerManager;
 import com.assambra.common.masterserver.server.UnityServer;
 import com.assambra.common.masterserver.util.RandomStringUtil;
+import com.tvd12.gamebox.entity.MMORoom;
 import com.tvd12.gamebox.entity.NormalRoom;
 import com.tvd12.gamebox.entity.Player;
 import com.tvd12.gamebox.manager.PlayerManager;
@@ -116,7 +117,7 @@ public class UnityRoom extends NormalRoom {
 
         @Override
         public UnityRoom build() {
-            return new UnityRoom(this);
+            return (UnityRoom) super.build();
         }
 
         @Override
