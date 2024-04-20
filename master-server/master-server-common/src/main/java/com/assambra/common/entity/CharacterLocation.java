@@ -11,6 +11,6 @@ public class CharacterLocation {
     Long id;
     Long characterId;
     String roomName;
-    Double[] position;
-    Double[] rotation;
+    double[] position;
+    double[] rotation;
 }

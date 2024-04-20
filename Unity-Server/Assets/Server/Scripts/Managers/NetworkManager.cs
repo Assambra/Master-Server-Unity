@@ -29,7 +29,8 @@ namespace Assambra.Server
         private new void OnEnable()
         {
             base.OnEnable();
-            AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequestHandler);
+            AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequest);
+            AddHandler<EzyObject>(Commands.SERVER_PLAYER_SPAWN, ServerPlayerSpawnRequest);
         }
 
         private void Update()
@@ -107,12 +108,24 @@ namespace Assambra.Server
 
         #region RECEIVE
 
-        private void ServerStopRequestHandler(EzyAppProxy proxy, EzyObject data)
+        private void ServerStopRequest(EzyAppProxy proxy, EzyObject data)
         {
             LOGGER.debug("Receive SERVER_STOP request");
             
             Disconnect();
             Application.Quit();
+        }
+
+        private void ServerPlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
+        {
+            LOGGER.debug("Receive SERVER_PLAYER_SPAWN request");
+
+            string username = data.get<string>("username");
+            EzyArray position = data.get<EzyArray>("position");
+            EzyArray rotation = data.get<EzyArray>("rotation");
+            LOGGER.debug("Username: " + username);
+            LOGGER.debug("x: " + position.get<float>(0) + " y: " + position.get<float>(1) + " z: " + position.get<float>(2));
+            LOGGER.debug("x: " + rotation.get<float>(0) + " y: " + rotation.get<float>(1) + " z: " + rotation.get<float>(2));
         }
 
         #endregion
