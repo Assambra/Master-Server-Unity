@@ -125,9 +125,11 @@ namespace Assambra.Server
             Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
             Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
 
-            PlayerModel player = new PlayerModel(username, pos, rot);
+            GameObject player = ServerManager.Instance.CreatePlayer(pos, rot);
 
-            ServerManager.Instance.ServerPlayerList.Add(player);
+            PlayerModel playerModel = new PlayerModel(player, username, pos, rot);
+
+            ServerManager.Instance.ServerPlayerList.Add(playerModel);
         }
 
         #endregion
