@@ -1,5 +1,6 @@
 using Assambra.GameFramework.GameManager;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assambra.Server
@@ -7,7 +8,8 @@ namespace Assambra.Server
     public class ServerManager : MonoBehaviour
     {
         public static ServerManager Instance { get; private set; }
-        
+        public List<PlayerModel> ServerPlayerList = new List<PlayerModel>();
+
         private string _username;
         private string _password;
         private string _room;

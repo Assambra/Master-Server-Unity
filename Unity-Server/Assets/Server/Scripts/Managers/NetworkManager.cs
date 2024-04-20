@@ -15,7 +15,6 @@ namespace Assambra.Server
 
         private EzySocketConfig socketConfig;
 
-
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -123,9 +122,12 @@ namespace Assambra.Server
             string username = data.get<string>("username");
             EzyArray position = data.get<EzyArray>("position");
             EzyArray rotation = data.get<EzyArray>("rotation");
-            LOGGER.debug("Username: " + username);
-            LOGGER.debug("x: " + position.get<float>(0) + " y: " + position.get<float>(1) + " z: " + position.get<float>(2));
-            LOGGER.debug("x: " + rotation.get<float>(0) + " y: " + rotation.get<float>(1) + " z: " + rotation.get<float>(2));
+            Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
+            Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
+
+            PlayerModel player = new PlayerModel(username, pos, rot);
+
+            ServerManager.Instance.ServerPlayerList.Add(player);
         }
 
         #endregion
