@@ -27,6 +27,8 @@ public class ServerReadyController
         globalRoomManager.addRoom(newcomer());
     }
 
+    // Don't use Room with id 0 because if we remove a Player from a room we set player.setCurrentRoomId(0);
+
     private UnityRoom newcomer()
     {
         return UnityRoom.builder(true)
