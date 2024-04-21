@@ -34,7 +34,7 @@ public class ModelToResponseConverter {
     {
         return responseFactory.newObjectResponse()
                 .param("id", model.getId())
-                .param("username", model.getName())
+                .param("name", model.getName())
                 .param("isLocalPlayer", model.isLocalPlayer())
                 .param("roomName", model.getRoomName())
                 .param("position", model.getPosition())
