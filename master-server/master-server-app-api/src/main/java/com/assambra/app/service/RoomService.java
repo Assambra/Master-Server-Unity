@@ -44,7 +44,6 @@ public class RoomService extends EzyLoggable {
                 .command(Commands.PLAYER_SPAWN)
                 .username(player.getUsername())
                 .execute();
-
     }
 
     public void removePlayerFromRoom(UnityPlayer player)

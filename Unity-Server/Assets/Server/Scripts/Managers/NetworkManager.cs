@@ -32,6 +32,10 @@ namespace Assambra.Server
             base.OnEnable();
             AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequest);
             AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
+            
+            //Test
+            AddHandler<EzyObject>(Commands.HELLO_WORLD, HelloWorldResponse);
+
         }
 
         private void Update()
@@ -55,8 +59,8 @@ namespace Assambra.Server
 
         public void Login(string username, string password)
         {
-            LOGGER.debug("Login username = " + username + ", password = " + password);
-            LOGGER.debug("Socket clientName = " + socketProxy.getClient().getName());
+            Debug.Log("Login username = " + username + ", password = " + password);
+            Debug.Log("Socket clientName = " + socketProxy.getClient().getName());
 
             socketProxy.onLoginSuccess<Object>(HandleLoginSuccess);
             socketProxy.onUdpHandshake<Object>(HandleUdpHandshake);
@@ -81,20 +85,20 @@ namespace Assambra.Server
 
         private void HandleLoginSuccess(EzySocketProxy proxy, Object data)
         {
-            LOGGER.debug("Log in successfully");
+            Debug.Log("Log in successfully");
         }
 
         private void HandleUdpHandshake(EzySocketProxy proxy, Object data)
         {
-            LOGGER.debug("HandleUdpHandshake");
+            Debug.Log("HandleUdpHandshake");
             socketProxy.send(new EzyAppAccessRequest(socketConfig.AppName));
         }
 
         private void HandleAppAccessed(EzyAppProxy proxy, Object data)
         {
-            LOGGER.debug("App access successfully");
-            
-            LOGGER.debug("SendServerReady");
+            Debug.Log("App access successfully");
+
+            Debug.Log("SendServerReady");
             SendServerReady();
         }
 
@@ -105,9 +109,10 @@ namespace Assambra.Server
             appProxy.send(Commands.SERVER_READY);
         }
 
+        // Test
         private void SendServerToClient(string recipient, string command, List<KeyValuePair<string, object>> additionalParams)
         {
-            Debug.Log("SendServer2Client");
+            Debug.Log("SendServerToClient");
 
             var dataBuilder = EzyEntityFactory.newObjectBuilder()
                 .append("recipient", recipient)
@@ -151,7 +156,7 @@ namespace Assambra.Server
 
         private void ServerStopRequest(EzyAppProxy proxy, EzyObject data)
         {
-            LOGGER.debug("Receive SERVER_STOP request");
+            Debug.Log("Receive SERVER_STOP request");
             
             Disconnect();
             Application.Quit();
@@ -159,7 +164,7 @@ namespace Assambra.Server
 
         private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
         {
-            LOGGER.debug("Receive PLAYER_SPAWN request");
+            Debug.Log("Receive PLAYER_SPAWN request");
 
             string username = data.get<string>("username");
             EzyArray position = data.get<EzyArray>("position");
@@ -175,12 +180,16 @@ namespace Assambra.Server
 
             // Test
             string message = "Hello world";
-            SendServerToClient("Assambra", "helloWorld", new List<KeyValuePair<string, object>>
+            SendServerToClient(username, "helloWorld", new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>("message", message)
             });
+        }
 
-            //SendServerToClients();
+        // Test
+        private void HelloWorldResponse(EzyAppProxy proxy, EzyObject data)
+        {
+            Debug.Log("Receive HELLO_WORLD request");
         }
 
         #endregion

@@ -6,6 +6,7 @@ using com.tvd12.ezyfoxserver.client.factory;
 using com.tvd12.ezyfoxserver.client.request;
 using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
+using System.Collections.Generic;
 using UnityEngine;
 using Object = System.Object;
 
@@ -64,8 +65,8 @@ namespace Assambra.Client
 
         public void Login(string username, string password)
         {
-            LOGGER.debug("Login username = " + username + ", password = " + password);
-            LOGGER.debug("Socket clientName = " + socketProxy.getClient().getName());
+            Debug.Log("Login username = " + username + ", password = " + password);
+            Debug.Log("Socket clientName = " + socketProxy.getClient().getName());
 
             socketProxy.onLoginSuccess<Object>(LoginSuccessResponse);
             socketProxy.onUdpHandshake<Object>(UdpHandshakeResponse);
@@ -110,9 +111,22 @@ namespace Assambra.Client
             appProxy.send(Commands.PLAY, data);
         }
 
-        private void SendClientToServer()
+        private void SendClientToServer(string room, string command, List<KeyValuePair<string, object>> additionalParams)
         {
-            appProxy.send(Commands.CLIENT_TO_SERVER);
+            Debug.Log("SendClientToServer");
+
+            var dataBuilder = EzyEntityFactory.newObjectBuilder()
+                .append("room", room)
+                .append("command", command);
+
+            foreach (var pair in additionalParams)
+            {
+                dataBuilder.append(pair.Key, pair.Value);
+            }
+
+            EzyObject data = dataBuilder.build();
+
+            appProxy.send(Commands.CLIENT_TO_SERVER, data);
         }
 
         #endregion
@@ -121,18 +135,18 @@ namespace Assambra.Client
 
         private void LoginSuccessResponse(EzySocketProxy proxy, Object data)
         {
-            LOGGER.debug("Log in successfully");
+            Debug.Log("Log in successfully");
         }
 
         private void UdpHandshakeResponse(EzySocketProxy proxy, Object data)
         {
-            LOGGER.debug("HandleUdpHandshake");
+            Debug.Log("HandleUdpHandshake");
             socketProxy.send(new EzyAppAccessRequest(socketConfig.AppName));
         }
 
         private void AppAccessedResponse(EzyAppProxy proxy, Object data)
         {
-            LOGGER.debug("App access successfully");
+            Debug.Log("App access successfully");
             CharacterListRequest();
         }
 
@@ -160,7 +174,7 @@ namespace Assambra.Client
 
         private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
         {
-            LOGGER.debug("Receive PLAYER_SPAWN request");
+            Debug.Log("Receive PLAYER_SPAWN request");
             long id = data.get<long>("id");
             string name = data.get<string>("name");
             bool isLocalPlayer = data.get<bool>("isLocalPlayer");
@@ -185,12 +199,17 @@ namespace Assambra.Client
             GameManager.Instance.PlayerList.Add(playerModel);
 
             // Test
-            //SendClientToServer();
+            string message = "Hello world";
+            SendClientToServer(roomName, "helloWorld", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("message", message)
+            });
         }
 
+        // Test
         private void HelloWorldResponse(EzyAppProxy proxy, EzyObject data)
         {
-            LOGGER.debug("Receive HELLO_WORLD request");
+            Debug.Log("Receive HELLO_WORLD request");
         }
 
         #endregion

@@ -13,7 +13,10 @@ namespace Assambra.Server
         public const String CLIENT_TO_SERVER = "clientToServer";
         public const String SERVER_TO_CLIENT = "serverToClient";
         public const String SERVER_TO_CLIENTS = "serverToClients";
-        
+
+        //Test
+        public const String HELLO_WORLD = "helloWorld";
+
         private Commands() { }
     }
 }
