@@ -33,6 +33,9 @@ namespace Assambra.Client
 
             AddHandler<EzyArray>(Commands.CHARACTER_LIST, CharacterListResponse);
             AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
+
+            //Test
+            AddHandler<EzyObject>(Commands.HELLO_WORLD, HelloWorldResponse);
         }
 
         private void Update()
@@ -80,7 +83,7 @@ namespace Assambra.Client
             socketProxy.connect();
         }
 
-        #region REQUEST
+        #region SEND
 
         public void CharacterListRequest()
         {
@@ -107,9 +110,14 @@ namespace Assambra.Client
             appProxy.send(Commands.PLAY, data);
         }
 
+        private void SendClientToServer()
+        {
+            appProxy.send(Commands.CLIENT_TO_SERVER);
+        }
+
         #endregion
 
-        #region RESPONSE
+        #region RECEIVE
 
         private void LoginSuccessResponse(EzySocketProxy proxy, Object data)
         {
@@ -175,7 +183,16 @@ namespace Assambra.Client
             playerModel.Rotation = rot;
 
             GameManager.Instance.PlayerList.Add(playerModel);
+
+            // Test
+            //SendClientToServer();
         }
+
+        private void HelloWorldResponse(EzyAppProxy proxy, EzyObject data)
+        {
+            LOGGER.debug("Receive HELLO_WORLD request");
+        }
+
         #endregion
     }
 }

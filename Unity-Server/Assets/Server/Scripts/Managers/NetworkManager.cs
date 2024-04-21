@@ -1,9 +1,11 @@
 using com.tvd12.ezyfoxserver.client;
 using com.tvd12.ezyfoxserver.client.constant;
 using com.tvd12.ezyfoxserver.client.entity;
+using com.tvd12.ezyfoxserver.client.factory;
 using com.tvd12.ezyfoxserver.client.request;
 using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
+using System.Collections.Generic;
 using UnityEngine;
 using Object = System.Object;
 
@@ -103,6 +105,46 @@ namespace Assambra.Server
             appProxy.send(Commands.SERVER_READY);
         }
 
+        private void SendServerToClient(string recipient, string command, List<KeyValuePair<string, object>> additionalParams)
+        {
+            Debug.Log("SendServer2Client");
+
+            var dataBuilder = EzyEntityFactory.newObjectBuilder()
+                .append("recipient", recipient)
+                .append("command", command);
+
+            foreach (var pair in additionalParams)
+            {
+                dataBuilder.append(pair.Key, pair.Value);
+            }
+
+            EzyObject data = dataBuilder.build();
+
+            appProxy.send(Commands.SERVER_TO_CLIENT, data);
+        }
+
+        private void SendServerToClients(List<string> recipients, string command, List<KeyValuePair<string, object>> additionalParams)
+        {
+            var recipientsArray = EzyEntityFactory.newArrayBuilder();
+            foreach (string recipient in recipients)
+            {
+                recipientsArray.append(recipient);
+            }
+
+            var dataBuilder = EzyEntityFactory.newObjectBuilder()
+                .append("recipients", recipientsArray.build())
+                .append("command", command);
+
+            foreach (var pair in additionalParams)
+            {
+                dataBuilder.append(pair.Key, pair.Value);
+            }
+
+            EzyObject data = dataBuilder.build();
+
+            appProxy.send(Commands.SERVER_TO_CLIENTS, data);
+        }
+
         #endregion
 
         #region RECEIVE
@@ -130,6 +172,15 @@ namespace Assambra.Server
             PlayerModel playerModel = new PlayerModel(player, username, pos, rot);
 
             ServerManager.Instance.ServerPlayerList.Add(playerModel);
+
+            // Test
+            string message = "Hello world";
+            SendServerToClient("Assambra", "helloWorld", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("message", message)
+            });
+
+            //SendServerToClients();
         }
 
         #endregion
