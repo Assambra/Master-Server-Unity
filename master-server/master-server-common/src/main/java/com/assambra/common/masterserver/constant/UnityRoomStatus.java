@@ -1,4 +1,4 @@
-package com.assambra.common.constant;
+package com.assambra.common.masterserver.constant;
 
 import com.tvd12.ezyfox.util.EzyEnums;
 import com.tvd12.gamebox.constant.IRoomStatus;

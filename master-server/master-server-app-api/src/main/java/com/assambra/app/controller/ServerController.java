@@ -1,14 +1,18 @@
 package com.assambra.app.controller;
 
-import com.assambra.common.constant.UnityRoomStatus;
 import com.assambra.common.masterserver.constant.Commands;
 import com.assambra.app.service.ServerService;
 import com.tvd12.ezyfox.core.annotation.EzyDoHandle;
 import com.tvd12.ezyfox.core.annotation.EzyRequestController;
+import com.tvd12.ezyfox.entity.EzyArray;
+import com.tvd12.ezyfox.entity.EzyObject;
 import com.tvd12.ezyfox.util.EzyLoggable;
 import com.tvd12.ezyfoxserver.entity.EzyUser;
+import com.tvd12.ezyfoxserver.support.command.EzyObjectResponse;
 import com.tvd12.ezyfoxserver.support.factory.EzyResponseFactory;
 import lombok.AllArgsConstructor;
+
+import java.util.Map;
 
 @AllArgsConstructor
 @EzyRequestController
@@ -18,9 +22,72 @@ public class ServerController extends EzyLoggable {
     private final EzyResponseFactory responseFactory;
 
     @EzyDoHandle(Commands.SERVER_READY)
-    public void serverReady(EzyUser user)
+    public void serverReady(EzyUser ezyUser)
     {
-        logger.info("Receive Commands.SERVER_READY from Server: {}", user.getName());
-        serverService.setServerStatus(user, UnityRoomStatus.READY);
+        logger.info("Receive Commands.SERVER_READY from Server: {}", ezyUser.getName());
+        serverService.setServerReady(ezyUser);
+    }
+
+    @EzyDoHandle(Commands.CLIENT_TO_SERVER)
+    public void clientToServer(EzyUser ezyUser, EzyObject request)
+    {
+        logger.info("Receive Commands.CLIENT_TO_SERVER from Client: {}", ezyUser.getName());
+
+        Map<String, Object> requestData = request.toMap();
+
+        String command = (String) requestData.remove("command");
+        String room = (String) requestData.remove("room");
+
+        EzyObjectResponse response = responseFactory.newObjectResponse()
+                .command(command)
+                .username(room);
+
+        for (Map.Entry<String, Object> entry : requestData.entrySet()) {
+            response.param(entry.getKey(), entry.getValue());
+        }
+
+        response.execute();
+    }
+
+    @EzyDoHandle(Commands.SERVER_TO_CLIENT)
+    public void serverToClient(EzyUser ezyUser, EzyObject request)
+    {
+        logger.info("Receive Commands.SERVER_TO_CLIENT from Server: {}", ezyUser.getName());
+
+        Map<String, Object> requestData = request.toMap();
+
+        String command = (String) requestData.remove("command");
+        String recipient = (String) requestData.remove("recipient");
+
+        EzyObjectResponse response = responseFactory.newObjectResponse()
+                .command(command)
+                .username(recipient);
+
+        for (Map.Entry<String, Object> entry : requestData.entrySet()) {
+            response.param(entry.getKey(), entry.getValue());
+        }
+
+        response.execute();
+    }
+
+    @EzyDoHandle(Commands.SERVER_TO_CLIENTS)
+    public void serverToClients(EzyUser ezyUser, EzyObject request)
+    {
+        logger.info("Receive Commands.SERVER_TO_CLIENTS from Server: {}", ezyUser.getName());
+
+        Map<String, Object> requestData = request.toMap();
+
+        String command = (String) requestData.remove("command");
+        EzyArray recipients = (EzyArray) requestData.remove("recipients");
+
+        EzyObjectResponse response = responseFactory.newObjectResponse()
+                .command(command)
+                .usernames(recipients.toList());
+
+        for (Map.Entry<String, Object> entry : requestData.entrySet()) {
+            response.param(entry.getKey(), entry.getValue());
+        }
+
+        response.execute();
     }
 }

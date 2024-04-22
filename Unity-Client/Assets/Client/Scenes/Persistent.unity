@@ -287,6 +287,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4883510217923666553, guid: 697389ec9f47fba498875310523e2799, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -306,18 +310,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
       propertyPath: Scenes.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
       propertyPath: Scenes.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 807ab76a5f613f0448f7e5ea2b7c263d, type: 2}
+      objectReference: {fileID: 11400000, guid: 2d4df90e50a1d6149b1371f9db2a331d, type: 2}
     - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
       propertyPath: Scenes.Array.data[2]
       value: 
-      objectReference: {fileID: 11400000, guid: 891f543b6c0cbd942a229b9dba800674, type: 2}
+      objectReference: {fileID: 11400000, guid: 1c9ffd2eef0b37846a5c5cdcfe89fd46, type: 2}
     - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
       propertyPath: Scenes.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 807ab76a5f613f0448f7e5ea2b7c263d, type: 2}
+    - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
+      propertyPath: Scenes.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 891f543b6c0cbd942a229b9dba800674, type: 2}
+    - target: {fileID: 2810307544624843600, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
+      propertyPath: Scenes.Array.data[5]
       value: 
       objectReference: {fileID: 11400000, guid: c69173f02eb5afa4fa9006c57609b3c3, type: 2}
     - target: {fileID: 2810307544624843601, guid: fa4a424469a793a47a06180fc2feec08, type: 3}
@@ -490,6 +502,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4237111900781403002, guid: 3e5e829c800e14241923a5b95374b766, type: 3}
+      propertyPath: _playerPrefab
+      value: 
+      objectReference: {fileID: 1266403401945795627, guid: f4797d842d1a3f84d8d5d43efee7e5df, type: 3}
     - target: {fileID: 4237111900781403002, guid: 3e5e829c800e14241923a5b95374b766, type: 3}
       propertyPath: <SceneHandler>k__BackingField
       value: 

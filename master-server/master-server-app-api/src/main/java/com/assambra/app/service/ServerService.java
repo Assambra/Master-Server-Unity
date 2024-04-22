@@ -1,6 +1,6 @@
 package com.assambra.app.service;
 
-import com.assambra.common.constant.UnityRoomStatus;
+import com.assambra.common.masterserver.constant.UnityRoomStatus;
 import com.assambra.common.masterserver.entity.UnityRoom;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 import com.tvd12.ezyfox.util.EzyLoggable;
@@ -18,6 +18,23 @@ public class ServerService extends EzyLoggable {
 
     private final RoomManager<UnityRoom> globalRoomManager;
 
+    public List<UnityRoom> getServers()
+    {
+        return globalRoomManager.getRoomList();
+    }
+
+    public void setServerReady(EzyUser user)
+    {
+        for(UnityRoom room : globalRoomManager.getRoomList())
+        {
+            if(room.getName().equals(user.getName()))
+            {
+                logger.info("Set room: {} to ready", room.getName());
+                room.setReady(true);
+            }
+        }
+    }
+
     public void setServerStatus(EzyUser user, UnityRoomStatus status)
     {
         for(UnityRoom room : globalRoomManager.getRoomList())
@@ -28,10 +45,5 @@ public class ServerService extends EzyLoggable {
                 room.setStatus(status);
             }
         }
-    }
-
-    public List<UnityRoom> getServers()
-    {
-        return globalRoomManager.getRoomList();
     }
 }

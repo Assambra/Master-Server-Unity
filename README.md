@@ -72,7 +72,7 @@ and we always use the Ezyfox Client SDK for communication between Unity-Client <
 ## master-server
 We use an EzyFox server that acts as a master server. Its tasks are:
 User management, processing database requests, starting and managing a Unity server for each room.
-The client makes a request to the master server, which forwards the request to the unit server. Once these requests have been processed by the Unity server, it is sent to the master server and from there sent back to the client(s).
+The client makes a request to the master server, which forwards the request to the Unity-Server. Once these requests have been processed by the Unity server, it is sent to the master server and from there sent back to the client(s).
 
 <!-- SETUP DATABASE -->
 ### Setup Database
@@ -87,10 +87,17 @@ The client makes a request to the master server, which forwards the request to t
 
 `db.createUser({user: "root", pwd: "123456",roles: [{role: "readWrite", db:"master-server" }] })`
 
-5. Create a new collection:
+5. Create the following collections:
 
 `db.createCollection("user", { collation: { locale: 'en_US', strength: 2 } } )`
+
 `db.user.createIndex( { username: 1 } )`
+
+`db.createCollection("character", { collation: { locale: 'en_US', strength: 2 } } )`
+
+`db.character.createIndex( { name: 1 } )`
+
+`db.createCollection("character_location", { collation: { locale: 'en_US', strength: 2 } } )`
 
 6. Use this file for the next step
 
@@ -121,14 +128,19 @@ database: master-server
 We use a single project for the Unity Servers. The server contains all server scenes that correspond to a room. When it starts, the server receives 3 parameters: username, password and room. The server then uses our Module-GameManager to start the corresponding server scene. This has the advantage that, on the one hand, we only use one project and do not have to create another server project for each server and can therefore share the code that is the same for all servers. The Module GameManager uses a persistent scene where all manager classes/GameObjects are at home. The room scene with the 3D objects such as terrain are additionally loaded.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- Create the Unity Server -->
 ### Create the Unity Server
-Open the Unity Server project in Unity. Open Build Settings, File -> Build Settings. Be sure to include all server scenes in Scenes In Build, if not add them. Select as Platform Dedicated Server and chose under Target Platform your Platform Windows or Linux and Build the project.
+Open the Unity-Server project in Unity. Open Build Settings, File -> Build Settings. Be sure to include all server scenes in Scenes In Build, if not add them. Select as Platform Dedicated Server and chose under Target Platform your Platform Windows or Linux and Build the project.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- Setup server path -->
 ### Setup server path
 Open the master-server project in your IDE edit the file: `master-server/master-server-app-api/resources/application.properties` and add the path to your server executables from the step before where you saved it. E.g. D:/Game Builds/Unity-Server/Unity-Server.exe
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Unity Client -->
 ## Unity Client
-
+Open the Unity-Client project in Unity and use the Persistent Unity Scene location `Assets/Client/Scenes/Persistent` if the master-server are running you can click Play in the Unity Editor.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- Contact -->

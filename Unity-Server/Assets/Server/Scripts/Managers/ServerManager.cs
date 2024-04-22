@@ -1,12 +1,17 @@
 using Assambra.GameFramework.GameManager;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assambra.Server
 {
     public class ServerManager : MonoBehaviour
     {
+        public string Room { get => _room;}
         public static ServerManager Instance { get; private set; }
+        public List<PlayerModel> ServerPlayerList = new List<PlayerModel>();
+        
+        [SerializeField] private GameObject _playerPrefab;
         
         private string _username;
         private string _password;
@@ -69,6 +74,11 @@ namespace Assambra.Server
                 doOnce = true;
                 NetworkManager.Instance.Login(_username, _password);
             }
+        }
+
+        public GameObject CreatePlayer(Vector3 position, Vector3 rotation)
+        {
+            return Instantiate(_playerPrefab, position, Quaternion.Euler(rotation));
         }
     }
 }

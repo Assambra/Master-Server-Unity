@@ -1,9 +1,11 @@
 using com.tvd12.ezyfoxserver.client;
 using com.tvd12.ezyfoxserver.client.constant;
 using com.tvd12.ezyfoxserver.client.entity;
+using com.tvd12.ezyfoxserver.client.factory;
 using com.tvd12.ezyfoxserver.client.request;
 using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
+using System.Collections.Generic;
 using UnityEngine;
 using Object = System.Object;
 
@@ -14,7 +16,6 @@ namespace Assambra.Server
         public static NetworkManager Instance { get; private set; }
 
         private EzySocketConfig socketConfig;
-
 
         private void Awake()
         {
@@ -29,7 +30,8 @@ namespace Assambra.Server
         private new void OnEnable()
         {
             base.OnEnable();
-            AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequestHandler);
+            AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequest);
+            AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
         }
 
         private void Update()
@@ -53,8 +55,8 @@ namespace Assambra.Server
 
         public void Login(string username, string password)
         {
-            LOGGER.debug("Login username = " + username + ", password = " + password);
-            LOGGER.debug("Socket clientName = " + socketProxy.getClient().getName());
+            Debug.Log("Login username = " + username + ", password = " + password);
+            Debug.Log("Socket clientName = " + socketProxy.getClient().getName());
 
             socketProxy.onLoginSuccess<Object>(HandleLoginSuccess);
             socketProxy.onUdpHandshake<Object>(HandleUdpHandshake);
@@ -79,20 +81,20 @@ namespace Assambra.Server
 
         private void HandleLoginSuccess(EzySocketProxy proxy, Object data)
         {
-            LOGGER.debug("Log in successfully");
+            Debug.Log("Log in successfully");
         }
 
         private void HandleUdpHandshake(EzySocketProxy proxy, Object data)
         {
-            LOGGER.debug("HandleUdpHandshake");
+            Debug.Log("HandleUdpHandshake");
             socketProxy.send(new EzyAppAccessRequest(socketConfig.AppName));
         }
 
         private void HandleAppAccessed(EzyAppProxy proxy, Object data)
         {
-            LOGGER.debug("App access successfully");
-            
-            LOGGER.debug("SendServerReady");
+            Debug.Log("App access successfully");
+
+            Debug.Log("SendServerReady");
             SendServerReady();
         }
 
@@ -103,16 +105,86 @@ namespace Assambra.Server
             appProxy.send(Commands.SERVER_READY);
         }
 
+        
+        private void SendServerToClient(string recipient, string command, List<KeyValuePair<string, object>> additionalParams)
+        {
+            Debug.Log("SendServerToClient");
+
+            var dataBuilder = EzyEntityFactory.newObjectBuilder()
+                .append("recipient", recipient)
+                .append("command", command);
+
+            foreach (var pair in additionalParams)
+            {
+                dataBuilder.append(pair.Key, pair.Value);
+            }
+
+            EzyObject data = dataBuilder.build();
+
+            appProxy.send(Commands.SERVER_TO_CLIENT, data);
+        }
+
+        private void SendServerToClients(List<string> recipients, string command, List<KeyValuePair<string, object>> additionalParams)
+        {
+            var recipientsArray = EzyEntityFactory.newArrayBuilder();
+            foreach (string recipient in recipients)
+            {
+                recipientsArray.append(recipient);
+            }
+
+            var dataBuilder = EzyEntityFactory.newObjectBuilder()
+                .append("recipients", recipientsArray.build())
+                .append("command", command);
+
+            foreach (var pair in additionalParams)
+            {
+                dataBuilder.append(pair.Key, pair.Value);
+            }
+
+            EzyObject data = dataBuilder.build();
+
+            appProxy.send(Commands.SERVER_TO_CLIENTS, data);
+        }
+
         #endregion
 
         #region RECEIVE
 
-        private void ServerStopRequestHandler(EzyAppProxy proxy, EzyObject data)
+        private void ServerStopRequest(EzyAppProxy proxy, EzyObject data)
         {
-            LOGGER.debug("Receive SERVER_STOP request");
+            Debug.Log("Receive SERVER_STOP request");
             
             Disconnect();
             Application.Quit();
+        }
+
+        private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
+        {
+            Debug.Log("Receive PLAYER_SPAWN request");
+
+            string name = data.get<string>("name");
+            string username = data.get<string>("username");
+            EzyArray position = data.get<EzyArray>("position");
+            EzyArray rotation = data.get<EzyArray>("rotation");
+            Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
+            Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
+
+            GameObject playerGameObject = ServerManager.Instance.CreatePlayer(pos, rot);
+
+            PlayerModel playerModel = new PlayerModel(playerGameObject, name, username, pos, rot);
+
+            ServerManager.Instance.ServerPlayerList.Add(playerModel);
+
+            // Send PlayerSpawn to client
+            bool isLocalPlayer = false;
+            SendServerToClient(username, "playerSpawn", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("name", name),
+                new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
+                new KeyValuePair<string, object>("room", ServerManager.Instance.Room),
+                new KeyValuePair<string, object>("position", position),
+                new KeyValuePair<string, object>("rotation", rotation),
+            });
         }
 
         #endregion

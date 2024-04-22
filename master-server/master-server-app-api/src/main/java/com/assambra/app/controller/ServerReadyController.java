@@ -23,13 +23,16 @@ public class ServerReadyController
     public void handle(EzyAppContext ctx, EzyServerReadyEvent event) {
         logger.info("Initialize Server: World");
         globalRoomManager.addRoom(world());
+        logger.info("Initialize Server: Newcomer");
         globalRoomManager.addRoom(newcomer());
     }
 
+    // Don't use Room with id 0 because if we remove a Player from a room we set player.setCurrentRoomId(0);
+
     private UnityRoom newcomer()
     {
-        return UnityRoom.builder()
-                .id(0)
+        return UnityRoom.builder(true)
+                .id(1)
                 .name("Newcomer")
                 .maxPlayer(10000)
                 .build();
@@ -37,8 +40,8 @@ public class ServerReadyController
 
     private UnityRoom world()
     {
-        return UnityRoom.builder()
-                .id(1)
+        return UnityRoom.builder(true)
+                .id(2)
                 .name("World")
                 .maxPlayer(10000)
                 .build();
