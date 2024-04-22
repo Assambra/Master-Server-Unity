@@ -37,7 +37,7 @@ public class ServerController extends EzyLoggable {
 
         String command = (String) requestData.remove("command");
         String room = (String) requestData.remove("room");
-        
+
         EzyObjectResponse response = responseFactory.newObjectResponse()
                 .command(command)
                 .username(room);
