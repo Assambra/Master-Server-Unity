@@ -176,32 +176,26 @@ namespace Assambra.Client
         private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
         {
             Debug.Log("Receive PLAYER_SPAWN request");
-            long id = data.get<long>("id");
             string name = data.get<string>("name");
             bool isLocalPlayer = data.get<bool>("isLocalPlayer");
-            string roomName = data.get<string>("roomName");
+            string room = data.get<string>("room");
             EzyArray position = data.get<EzyArray>("position");
             EzyArray rotation = data.get<EzyArray>("rotation");
             Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
             Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
 
-            Scenes scenes = GameManager.Instance.getScenesByName(roomName);
+            Scenes scenes = GameManager.Instance.getScenesByName(room);
             GameManager.Instance.ChangeScene(scenes);
 
             GameObject playerGameObject = GameManager.Instance.CreatePlayer(pos, rot);
 
-            PlayerModel playerModel = new PlayerModel(id, name);
-            playerModel.PlayerGameObject = playerGameObject;
-            playerModel.IsLocalPlayer = isLocalPlayer;
-            playerModel.RoomName = roomName;
-            playerModel.Position = pos;
-            playerModel.Rotation = rot;
+            PlayerModel playerModel = new PlayerModel(playerGameObject, name, isLocalPlayer, room, pos, rot);
 
             GameManager.Instance.PlayerList.Add(playerModel);
 
             // Test
             string message = "Hello world";
-            SendClientToServer(roomName, "helloWorld", new List<KeyValuePair<string, object>>
+            SendClientToServer(room, "helloWorld", new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>("message", message)
             });

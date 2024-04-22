@@ -44,9 +44,9 @@ namespace Assambra.Client
             }
         }
 
-        private void HandleCharacterSelection(CharacterInfoModel character)
+        private void HandleCharacterSelection(CharacterInfoModel characterInfoModel)
         {
-            _id = character.Id;
+            _id = characterInfoModel.Id;
         }
     }
 }

@@ -179,6 +179,17 @@ namespace Assambra.Server
 
             ServerManager.Instance.ServerPlayerList.Add(playerModel);
 
+            // Send PlayerSpawn to client
+            bool isLocalPlayer = false;
+            SendServerToClient(username, "playerSpawn", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("name", name),
+                new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
+                new KeyValuePair<string, object>("room", ServerManager.Instance.Room),
+                new KeyValuePair<string, object>("position", position),
+                new KeyValuePair<string, object>("rotation", rotation),
+            });
+
             // Test
             string message = "Hello world";
             SendServerToClient(username, "helloWorld", new List<KeyValuePair<string, object>>

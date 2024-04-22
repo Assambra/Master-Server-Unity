@@ -7,6 +7,7 @@ namespace Assambra.Server
 {
     public class ServerManager : MonoBehaviour
     {
+        public string Room { get => _room;}
         public static ServerManager Instance { get; private set; }
         public List<PlayerModel> ServerPlayerList = new List<PlayerModel>();
         
