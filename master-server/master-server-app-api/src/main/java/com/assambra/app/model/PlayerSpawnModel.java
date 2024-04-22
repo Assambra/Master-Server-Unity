@@ -1,13 +1,14 @@
 package com.assambra.app.model;
 
+import com.tvd12.ezyfox.entity.EzyArray;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class CharacterModel {
-    private Long id;
-    private Long userId;
+public class PlayerSpawnModel {
     private String name;
     private String username;
+    private EzyArray position;
+    private EzyArray rotation;
 }

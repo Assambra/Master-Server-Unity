@@ -166,15 +166,16 @@ namespace Assambra.Server
         {
             Debug.Log("Receive PLAYER_SPAWN request");
 
+            string name = data.get<string>("name");
             string username = data.get<string>("username");
             EzyArray position = data.get<EzyArray>("position");
             EzyArray rotation = data.get<EzyArray>("rotation");
             Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
             Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
 
-            GameObject player = ServerManager.Instance.CreatePlayer(pos, rot);
+            GameObject playerGameObject = ServerManager.Instance.CreatePlayer(pos, rot);
 
-            PlayerModel playerModel = new PlayerModel(player, username, pos, rot);
+            PlayerModel playerModel = new PlayerModel(playerGameObject, name, username, pos, rot);
 
             ServerManager.Instance.ServerPlayerList.Add(playerModel);
 

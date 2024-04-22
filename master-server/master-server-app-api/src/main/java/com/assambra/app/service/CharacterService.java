@@ -3,8 +3,6 @@ package com.assambra.app.service;
 import com.assambra.app.constant.GameConstant;
 import com.assambra.app.model.CharacterInfoListModel;
 import com.assambra.app.model.CharacterInfoModel;
-import com.assambra.app.model.CharacterListModel;
-import com.assambra.app.model.CharacterModel;
 import com.assambra.app.request.CreateCharacterRequest;
 import com.assambra.common.entity.Character;
 import com.assambra.common.entity.CharacterLocation;
@@ -102,30 +100,6 @@ public class CharacterService extends EzyLoggable {
                         .room(room)
                         .build();
                 }
-        ).collect(Collectors.toList());
-
-        return answer;
-    }
-
-    public CharacterListModel getCharacterListModel(EzyUser ezyUser)
-    {
-        List<Character> allCharacters = getAllCharactersOfUser(ezyUser);
-
-        List<CharacterModel> characterModel = getListCharacterModel(allCharacters);
-
-        return CharacterListModel.builder()
-                .characters(characterModel)
-                .build();
-    }
-
-    public List<CharacterModel> getListCharacterModel(List<Character> characters)
-    {
-        List<CharacterModel> answer = characters.stream().map(
-                character -> CharacterModel.builder()
-                        .id(character.getId())
-                        .userId(character.getUserId())
-                        .name(character.getName())
-                        .build()
         ).collect(Collectors.toList());
 
         return answer;
