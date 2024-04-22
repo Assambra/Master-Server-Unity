@@ -11,15 +11,15 @@ namespace Assambra.Client
         [SerializeField] private TMP_Text _textName;
         [SerializeField] private TMP_Text _textLocation;
 
-        private PlayerModel _characterModel;
+        private CharacterInfoModel _characterInfoModel;
 
-        public void Initialize(PlayerModel characterModel, Action<PlayerModel> onButtonClickAction)
+        public void Initialize(CharacterInfoModel characterInfoModel, Action<CharacterInfoModel> onButtonClickAction)
         {
-            _characterModel = characterModel;
-            _button.onClick.AddListener(() => onButtonClickAction(_characterModel));
+            _characterInfoModel = characterInfoModel;
+            _button.onClick.AddListener(() => onButtonClickAction(_characterInfoModel));
 
-            _textName.text = characterModel.Name;
-            _textLocation.text = "";
+            _textName.text = characterInfoModel.Name;
+            _textLocation.text = characterInfoModel.Room;
         }
     }
 }

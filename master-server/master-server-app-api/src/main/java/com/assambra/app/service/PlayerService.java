@@ -96,7 +96,7 @@ public class PlayerService extends EzyLoggable {
                 .id(character.getId())
                 .name(character.getName())
                 .isLocalPlayer(true)
-                .roomName(characterLocation.getRoomName())
+                .roomName(characterLocation.getRoom())
                 .position(
                         new Vec3(
                                 (float)pos[0],

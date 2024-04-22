@@ -158,14 +158,15 @@ namespace Assambra.Client
             {
                 for (int i = 0; i < data.size(); i++)
                 {
-                    EzyObject character = data.get<EzyObject>(i);
+                    EzyObject characterInfo = data.get<EzyObject>(i);
 
-                    PlayerModel characterModel = new PlayerModel(
-                        character.get<long>("id"),
-                        character.get<string>("name")
+                    CharacterInfoModel characterInfoModel = new CharacterInfoModel(
+                        characterInfo.get<long>("id"),
+                        characterInfo.get<string>("name"),
+                        characterInfo.get<string>("room")
                         );
 
-                    GameManager.Instance.CharacterInfos.Add(characterModel);
+                    GameManager.Instance.CharacterInfos.Add(characterInfoModel);
                 }
 
                 GameManager.Instance.ChangeScene(Scenes.SelectCharacter);

@@ -34,17 +34,17 @@ namespace Assambra.Client
 
         private void CreateCharacterElements()
         {
-            foreach (PlayerModel pm in GameManager.Instance.CharacterInfos)
+            foreach (CharacterInfoModel cim in GameManager.Instance.CharacterInfos)
             {
                 GameObject go = GameObject.Instantiate(_characterElementPrefab, _characterElementHome);
                 CharacterElement ce = go.GetComponent<CharacterElement>();
-                ce.Initialize(pm, HandleCharacterSelection);
+                ce.Initialize(cim, HandleCharacterSelection);
 
                 _characterElements.Add(go);
             }
         }
 
-        private void HandleCharacterSelection(PlayerModel character)
+        private void HandleCharacterSelection(CharacterInfoModel character)
         {
             _id = character.Id;
         }

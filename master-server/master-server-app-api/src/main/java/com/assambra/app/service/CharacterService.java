@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Setter
@@ -50,7 +51,7 @@ public class CharacterService extends EzyLoggable {
         CharacterLocation characterLocation = new CharacterLocation();
         characterLocation.setId(maxIdService.incrementAndGet("characterLocation"));
         characterLocation.setCharacterId(character.getId());
-        characterLocation.setRoomName(GameConstant.START_SCENE);
+        characterLocation.setRoom(GameConstant.START_ROOM);
         characterLocation.setPosition(GameConstant.START_POSITION);
         characterLocation.setRotation(GameConstant.START_ROTATION);
         characterLocationRepo.save(characterLocation);
@@ -61,39 +62,54 @@ public class CharacterService extends EzyLoggable {
         return characterRepo.findByField("name", name) != null;
     }
 
-    public List<Character> getAllCharacters(EzyUser ezyuser)
+    public List<Character> getAllCharactersOfUser (EzyUser ezyUser)
     {
-        User user = userRepo.findByField("username", ezyuser.getName());
-
+        User user = userRepo.findByField("username", ezyUser.getName());
         return characterRepo.findListByField("userId", user.getId());
     }
 
-    public CharacterInfoListModel getCharacterInfoListModel(EzyUser ezyuser)
+    public List<CharacterLocation> getAllCharacterLocationsOfUser(EzyUser ezyUser)
     {
-        List<Character> allCharacters = getAllCharacters(ezyuser);
+        User user = userRepo.findByField("username", ezyUser.getName());
+        Character character = characterRepo.findByField("userId", user.getId());
+        return characterLocationRepo.findListByField("characterId", character.getId());
+    }
 
-        List<CharacterInfoModel> characterInfoModel = getListCharacterInfoModel(allCharacters);
+    public CharacterInfoListModel getCharacterInfoListModel(EzyUser ezyUser)
+    {
+        List<Character> allCharacters = getAllCharactersOfUser(ezyUser);
+        List<CharacterLocation> allCharacterLocations = getAllCharacterLocationsOfUser(ezyUser);
+
+        List<CharacterInfoModel> characterInfoModel = getListCharacterInfoModel(allCharacters, allCharacterLocations);
 
         return CharacterInfoListModel.builder()
                 .characters(characterInfoModel)
                 .build();
     }
 
-    public List<CharacterInfoModel> getListCharacterInfoModel(List<Character> characters)
+    public List<CharacterInfoModel> getListCharacterInfoModel(List<Character> characters, List<CharacterLocation> characterLocations)
     {
+        Map<Long, String> roomMap = characterLocations.stream()
+                .collect(Collectors.toMap(CharacterLocation::getCharacterId, CharacterLocation::getRoom));
+
         List<CharacterInfoModel> answer = characters.stream().map(
-                character -> CharacterInfoModel.builder()
+                character -> {
+                    String room = roomMap.get(character.getId());
+
+                    return CharacterInfoModel.builder()
                         .id(character.getId())
                         .name(character.getName())
-                        .build()
+                        .room(room)
+                        .build();
+                }
         ).collect(Collectors.toList());
 
         return answer;
     }
 
-    public CharacterListModel getCharacterListModel(EzyUser ezyuser)
+    public CharacterListModel getCharacterListModel(EzyUser ezyUser)
     {
-        List<Character> allCharacters = getAllCharacters(ezyuser);
+        List<Character> allCharacters = getAllCharactersOfUser(ezyUser);
 
         List<CharacterModel> characterModel = getListCharacterModel(allCharacters);
 

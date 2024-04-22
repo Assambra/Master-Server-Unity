@@ -10,4 +10,5 @@ import lombok.Getter;
 public class CharacterInfoResponse {
     private Long id;
     private String name;
+    private String room;
 }

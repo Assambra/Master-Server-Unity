@@ -23,10 +23,8 @@ import lombok.AllArgsConstructor;
 @EzyRequestController
 public class GameController extends EzyLoggable {
 
-    private final EzyResponseFactory responseFactory;
     private final CharacterService characterService;
     private final PlayerService playerService;
-    private final ModelToResponseConverter modelToResponseConverter;
     private final RoomService roomService;
 
     @EzyDoHandle(Commands.PLAY)
@@ -44,6 +42,6 @@ public class GameController extends EzyLoggable {
         ServerPlayerSpawnModel serverPlayerSpawnModel =  playerService.getServerSpawnModel(character, characterLocation);
         ClientPlayerSpawnModel clientPlayerSpawnModel = playerService.getClientSpawnModel(character, characterLocation);
 
-        roomService.addPlayerToRoom(player, characterLocation.getRoomName(), serverPlayerSpawnModel, clientPlayerSpawnModel);
+        roomService.addPlayerToRoom(player, characterLocation.getRoom(), serverPlayerSpawnModel, clientPlayerSpawnModel);
     }
 }

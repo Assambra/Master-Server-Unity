@@ -10,7 +10,7 @@ public class CharacterLocation {
     @EzyId
     Long id;
     Long characterId;
-    String roomName;
+    String room;
     double[] position;
     double[] rotation;
 }

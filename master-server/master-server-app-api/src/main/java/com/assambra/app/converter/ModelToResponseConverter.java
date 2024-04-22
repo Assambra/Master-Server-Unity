@@ -19,6 +19,7 @@ public class ModelToResponseConverter {
         return CharacterInfoResponse.builder()
                 .id(model.getId())
                 .name(model.getName())
+                .room(model.getRoom())
                 .build();
     }
 

@@ -8,4 +8,5 @@ import lombok.Getter;
 public class CharacterInfoModel {
     private Long id;
     private String name;
+    private String room;
 }
