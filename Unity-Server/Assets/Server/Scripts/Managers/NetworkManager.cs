@@ -32,10 +32,6 @@ namespace Assambra.Server
             base.OnEnable();
             AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequest);
             AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
-            
-            //Test
-            AddHandler<EzyObject>(Commands.HELLO_WORLD, HelloWorldResponse);
-
         }
 
         private void Update()
@@ -109,7 +105,7 @@ namespace Assambra.Server
             appProxy.send(Commands.SERVER_READY);
         }
 
-        // Test
+        
         private void SendServerToClient(string recipient, string command, List<KeyValuePair<string, object>> additionalParams)
         {
             Debug.Log("SendServerToClient");
@@ -189,19 +185,6 @@ namespace Assambra.Server
                 new KeyValuePair<string, object>("position", position),
                 new KeyValuePair<string, object>("rotation", rotation),
             });
-
-            // Test
-            string message = "Hello world";
-            SendServerToClient(username, "helloWorld", new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("message", message)
-            });
-        }
-
-        // Test
-        private void HelloWorldResponse(EzyAppProxy proxy, EzyObject data)
-        {
-            Debug.Log("Receive HELLO_WORLD request");
         }
 
         #endregion

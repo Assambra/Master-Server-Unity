@@ -34,9 +34,6 @@ namespace Assambra.Client
 
             AddHandler<EzyArray>(Commands.CHARACTER_LIST, CharacterListResponse);
             AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
-
-            //Test
-            AddHandler<EzyObject>(Commands.HELLO_WORLD, HelloWorldResponse);
         }
 
         private void Update()
@@ -192,19 +189,6 @@ namespace Assambra.Client
             PlayerModel playerModel = new PlayerModel(playerGameObject, name, isLocalPlayer, room, pos, rot);
 
             GameManager.Instance.PlayerList.Add(playerModel);
-
-            // Test
-            string message = "Hello world";
-            SendClientToServer(room, "helloWorld", new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("message", message)
-            });
-        }
-
-        // Test
-        private void HelloWorldResponse(EzyAppProxy proxy, EzyObject data)
-        {
-            Debug.Log("Receive HELLO_WORLD request");
         }
 
         #endregion
