@@ -1,5 +1,7 @@
 package com.assambra.app.controller;
 
+import com.assambra.app.request.ServerReadyRequest;
+import com.assambra.app.service.RoomService;
 import com.assambra.common.masterserver.constant.Commands;
 import com.assambra.app.service.ServerService;
 import com.tvd12.ezyfox.core.annotation.EzyDoHandle;
@@ -12,6 +14,7 @@ import com.tvd12.ezyfoxserver.support.command.EzyObjectResponse;
 import com.tvd12.ezyfoxserver.support.factory.EzyResponseFactory;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -20,12 +23,20 @@ public class ServerController extends EzyLoggable {
 
     private final ServerService serverService;
     private final EzyResponseFactory responseFactory;
+    private final RoomService roomService;
+    private final List<EzyUser> globalServerEzyUsers;
 
     @EzyDoHandle(Commands.SERVER_READY)
-    public void serverReady(EzyUser ezyUser)
+    public void serverReady(EzyUser ezyUser, ServerReadyRequest request)
     {
-        logger.info("Receive Commands.SERVER_READY from Server: {}", ezyUser.getName());
-        serverService.setServerReady(ezyUser);
+        if(roomService.checkRoomPassword(ezyUser.getName(), request.getPassword()))
+        {
+            logger.info("Receive Commands.SERVER_READY from Server: {} with correct password", ezyUser.getName());
+            globalServerEzyUsers.add(ezyUser);
+            serverService.setServerReady(ezyUser);
+        }
+        else
+            logger.info("Cheat: Commands.SERVER_READY from User: {} wrong password!", ezyUser.getName());
     }
 
     @EzyDoHandle(Commands.CLIENT_TO_SERVER)
