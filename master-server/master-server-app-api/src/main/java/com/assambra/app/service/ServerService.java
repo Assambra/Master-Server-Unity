@@ -17,6 +17,7 @@ import java.util.List;
 public class ServerService extends EzyLoggable {
 
     private final RoomManager<UnityRoom> globalRoomManager;
+    private final List<EzyUser> globalServerEzyUsers;
 
     public List<UnityRoom> getServers()
     {
@@ -33,6 +34,10 @@ public class ServerService extends EzyLoggable {
                 room.setReady(true);
             }
         }
+    }
+    public List<EzyUser> getServersAsEzyUser()
+    {
+        return globalServerEzyUsers;
     }
 
     public void setServerStatus(EzyUser user, UnityRoomStatus status)

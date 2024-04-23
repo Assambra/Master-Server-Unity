@@ -50,4 +50,10 @@ public class RoomService extends EzyLoggable {
         Send command. SERVER_PLAYER_DESPAWN to room server;
          */
     }
+
+    public boolean checkRoomPassword(String roomName, String roomPassword)
+    {
+        UnityRoom room = getRoom(roomName);
+        return roomPassword.equals(roomPassword);
+    }
 }

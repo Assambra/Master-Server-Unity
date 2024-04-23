@@ -16,7 +16,7 @@ namespace Assambra.Server
         public static NetworkManager Instance { get; private set; }
 
         private EzySocketConfig socketConfig;
-
+        
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -102,7 +102,11 @@ namespace Assambra.Server
 
         private void SendServerReady()
         {
-            appProxy.send(Commands.SERVER_READY);
+            EzyObject data = EzyEntityFactory.newObjectBuilder()
+                .append("password", ServerManager.Instance.Password)
+                .build();
+
+            appProxy.send(Commands.SERVER_READY, data);
         }
 
         
