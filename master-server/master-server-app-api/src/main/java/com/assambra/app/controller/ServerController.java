@@ -37,7 +37,11 @@ public class ServerController extends EzyLoggable {
             serverService.setServerReady(ezyUser);
         }
         else
+        {
             logger.info("Cheat: Commands.SERVER_READY from User: {} wrong password!", ezyUser.getName());
+            ezyUser.disconnect(EzyDisconnectReason.ADMIN_KICK);
+        }
+
     }
 
     @EzyDoHandle(Commands.CLIENT_TO_SERVER)
