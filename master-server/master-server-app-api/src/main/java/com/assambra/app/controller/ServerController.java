@@ -6,9 +6,11 @@ import com.assambra.common.masterserver.constant.Commands;
 import com.assambra.app.service.ServerService;
 import com.tvd12.ezyfox.core.annotation.EzyDoHandle;
 import com.tvd12.ezyfox.core.annotation.EzyRequestController;
+import com.tvd12.ezyfox.core.exception.EzyBadRequestException;
 import com.tvd12.ezyfox.entity.EzyArray;
 import com.tvd12.ezyfox.entity.EzyObject;
 import com.tvd12.ezyfox.util.EzyLoggable;
+import com.tvd12.ezyfoxserver.constant.EzyDisconnectReason;
 import com.tvd12.ezyfoxserver.entity.EzyUser;
 import com.tvd12.ezyfoxserver.support.command.EzyObjectResponse;
 import com.tvd12.ezyfoxserver.support.factory.EzyResponseFactory;
@@ -63,42 +65,56 @@ public class ServerController extends EzyLoggable {
     @EzyDoHandle(Commands.SERVER_TO_CLIENT)
     public void serverToClient(EzyUser ezyUser, EzyObject request)
     {
-        logger.info("Receive Commands.SERVER_TO_CLIENT from Server: {}", ezyUser.getName());
+        if(serverService.getServersAsEzyUser().contains(ezyUser))
+        {
+            logger.info("Receive Commands.SERVER_TO_CLIENT from Server: {}", ezyUser.getName());
+            Map<String, Object> requestData = request.toMap();
 
-        Map<String, Object> requestData = request.toMap();
+            String command = (String) requestData.remove("command");
+            String recipient = (String) requestData.remove("recipient");
 
-        String command = (String) requestData.remove("command");
-        String recipient = (String) requestData.remove("recipient");
+            EzyObjectResponse response = responseFactory.newObjectResponse()
+                    .command(command)
+                    .username(recipient);
 
-        EzyObjectResponse response = responseFactory.newObjectResponse()
-                .command(command)
-                .username(recipient);
+            for (Map.Entry<String, Object> entry : requestData.entrySet()) {
+                response.param(entry.getKey(), entry.getValue());
+            }
 
-        for (Map.Entry<String, Object> entry : requestData.entrySet()) {
-            response.param(entry.getKey(), entry.getValue());
+            response.execute();
         }
-
-        response.execute();
+        else
+        {
+            logger.info("Cheat: Receive Commands.SERVER_TO_CLIENT from User: {}", ezyUser.getName());
+            ezyUser.disconnect(EzyDisconnectReason.ADMIN_KICK);
+        }
     }
 
     @EzyDoHandle(Commands.SERVER_TO_CLIENTS)
     public void serverToClients(EzyUser ezyUser, EzyObject request)
     {
-        logger.info("Receive Commands.SERVER_TO_CLIENTS from Server: {}", ezyUser.getName());
+        if(serverService.getServersAsEzyUser().contains(ezyUser))
+        {
+            logger.info("Receive Commands.SERVER_TO_CLIENTS from Server: {}", ezyUser.getName());
+            Map<String, Object> requestData = request.toMap();
 
-        Map<String, Object> requestData = request.toMap();
+            String command = (String) requestData.remove("command");
+            EzyArray recipients = (EzyArray) requestData.remove("recipients");
 
-        String command = (String) requestData.remove("command");
-        EzyArray recipients = (EzyArray) requestData.remove("recipients");
+            EzyObjectResponse response = responseFactory.newObjectResponse()
+                    .command(command)
+                    .usernames(recipients.toList());
 
-        EzyObjectResponse response = responseFactory.newObjectResponse()
-                .command(command)
-                .usernames(recipients.toList());
+            for (Map.Entry<String, Object> entry : requestData.entrySet()) {
+                response.param(entry.getKey(), entry.getValue());
+            }
 
-        for (Map.Entry<String, Object> entry : requestData.entrySet()) {
-            response.param(entry.getKey(), entry.getValue());
+            response.execute();
         }
-
-        response.execute();
+        else
+        {
+            logger.info("Cheat: Receive Commands.SERVER_TO_CLIENTS from User: {}", ezyUser.getName());
+            ezyUser.disconnect(EzyDisconnectReason.ADMIN_KICK);
+        }
     }
 }
