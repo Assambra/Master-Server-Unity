@@ -189,39 +189,8 @@ namespace Assambra.Client
             PlayerModel playerModel = new PlayerModel(playerGameObject, name, isLocalPlayer, room, pos, rot);
 
             GameManager.Instance.PlayerList.Add(playerModel);
-
-
-            //Test
-            bool isLocalPlayerTest = false;
-            string roomTest = "Newcomer";
-            SendServerToClient("Assambra", "playerSpawn", new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("name", name),
-                new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayerTest),
-                new KeyValuePair<string, object>("room", roomTest),
-                new KeyValuePair<string, object>("position", position),
-                new KeyValuePair<string, object>("rotation", rotation),
-            });
         }
 
-        // Test
-        private void SendServerToClient(string recipient, string command, List<KeyValuePair<string, object>> additionalParams)
-        {
-            Debug.Log("SendServerToClient");
-
-            var dataBuilder = EzyEntityFactory.newObjectBuilder()
-                .append("recipient", recipient)
-                .append("command", command);
-
-            foreach (var pair in additionalParams)
-            {
-                dataBuilder.append(pair.Key, pair.Value);
-            }
-
-            EzyObject data = dataBuilder.build();
-
-            appProxy.send(Commands.SERVER_TO_CLIENT, data);
-        }
         #endregion
     }
 }
