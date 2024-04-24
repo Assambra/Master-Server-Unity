@@ -1,5 +1,4 @@
 using Assambra.GameFramework.GameManager;
-using Assambra.Client;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,19 +22,11 @@ namespace Assambra.Client
 
         protected override void OnSceneChanged(Scene lastScene, Scene newScene)
         {
-
         }
 
         public GameObject CreatePlayer(Vector3 position, Vector3 rotation)
         {
             return Instantiate(_playerPrefab, position, Quaternion.Euler(rotation));
-        }
-
-        public Scenes getScenesByName(string scenename)
-        {
-            Scenes scene = (Scenes)Enum.Parse(typeof(Scenes), scenename);
-
-            return scene;
         }
     }
 }
