@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfc5b32f8af3c3e42bb19b1e24d4a59c, type: 3}
-  m_Name: Start
+  m_Script: {fileID: 11500000, guid: ab3f4b749507b684cbd324bccfb596a0, type: 3}
+  m_Name: ForAllServersSceneUISet
   m_EditorClassIdentifier: 
-  IsFirstScene: 1
-  scenePaths:
-  - Assets/Server/Scenes/Start.unity
-  SceneUISets: []
+  UIElementPrefabs:
+  - {fileID: 2702325962030854823, guid: e3c6ebcd58bccc84ab9f3a0e72585518, type: 3}

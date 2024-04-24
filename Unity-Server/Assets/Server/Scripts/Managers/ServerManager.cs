@@ -15,6 +15,8 @@ namespace Assambra.Server
         
         [SerializeField] private GameObject _playerPrefab;
         
+        public UIServerLog ServerLog;
+        
         private string _username;
         private string _password;
         private string _room;

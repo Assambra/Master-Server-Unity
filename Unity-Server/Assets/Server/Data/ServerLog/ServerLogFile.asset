@@ -9,10 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfc5b32f8af3c3e42bb19b1e24d4a59c, type: 3}
-  m_Name: Start
+  m_Script: {fileID: 11500000, guid: eb7f8a0d214775b4680fdcff7a0a86de, type: 3}
+  m_Name: ServerLogFile
   m_EditorClassIdentifier: 
-  IsFirstScene: 1
-  scenePaths:
-  - Assets/Server/Scenes/Start.unity
-  SceneUISets: []
+  File: 
