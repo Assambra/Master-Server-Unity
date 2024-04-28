@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfc5b32f8af3c3e42bb19b1e24d4a59c, type: 3}
   m_Name: Start
   m_EditorClassIdentifier: 
+  ScenePath: Assets/Server/Scenes/Start.unity
   IsFirstScene: 1
-  scenePaths:
-  - Assets/Server/Scenes/Start.unity
   SceneUISets: []

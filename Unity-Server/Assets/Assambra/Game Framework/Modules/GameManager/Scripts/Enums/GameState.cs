@@ -13,6 +13,6 @@ namespace Assambra.GameFramework.GameManager
 
         None,
         Start,
-        Server,
+        Server
     }
 }

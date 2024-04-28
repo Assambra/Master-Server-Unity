@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfc5b32f8af3c3e42bb19b1e24d4a59c, type: 3}
   m_Name: World
   m_EditorClassIdentifier: 
+  ScenePath: Assets/Server/Scenes/World.unity
   IsFirstScene: 0
-  scenePaths:
-  - Assets/Server/Scenes/World.unity
   SceneUISets:
   - {fileID: 11400000, guid: 2cdeae93fd7b5df4f91db93b69b596cf, type: 2}
