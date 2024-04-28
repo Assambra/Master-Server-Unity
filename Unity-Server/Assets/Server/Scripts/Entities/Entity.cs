@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Assambra.Server
 {
     [RequireComponent(typeof(SphereCollider))]
+    [RequireComponent(typeof(Rigidbody))]
 
     public abstract class Entity : MonoBehaviour
     {
@@ -19,6 +20,7 @@ namespace Assambra.Server
         private List<Entity> _nearbyEntities = new List<Entity>();
 
         private SphereCollider _triggerCollider;
+        private Rigidbody _rigidbody;
 
         protected virtual void Awake()
         {
@@ -26,11 +28,14 @@ namespace Assambra.Server
             _triggerCollider.isTrigger = true;
             _triggerCollider.radius = ServerConstants.AREA_OF_INTEREST;
 
+            _rigidbody = GetComponent<Rigidbody>();
+            _rigidbody.isKinematic = true;
+
             EntityEntered += OnEntityEntered;
             EntityExited += OnEntityExited;
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             EntityEntered -= OnEntityEntered;
             EntityExited -= OnEntityExited;
@@ -38,12 +43,14 @@ namespace Assambra.Server
 
         private void OnEntityEntered(Entity otherEntity)
         {
-            Debug.Log($"{Name} has detected {otherEntity.Name} entering the area.");
+            //Debug.Log($"{Name} has detected {otherEntity.Name} entering the area.");
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherEntity.Name} entering the area.");
         }
 
         private void OnEntityExited(Entity otherEntity)
         {
-            Debug.Log($"{Name} has detected {otherEntity.Name} leaving the area.");
+            //Debug.Log($"{Name} has detected {otherEntity.Name} leaving the area.");
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherEntity.Name} leaving the area.");
         }
 
         private void OnTriggerEnter(Collider other)

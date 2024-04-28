@@ -16,7 +16,7 @@ namespace Assambra.Server
         public List<PlayerModel> ServerPlayerList = new List<PlayerModel>();
         
         [SerializeField] private GameObject _playerPrefab;
-        
+
         public UIServerLog ServerLog;
         
         private string _username;

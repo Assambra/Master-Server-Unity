@@ -175,6 +175,9 @@ namespace Assambra.Server
 
             GameObject playerGameObject = ServerManager.Instance.CreatePlayer(pos, rot);
 
+            Entity entity = playerGameObject.GetComponent<Entity>();
+            entity.Name = name;
+
             PlayerModel playerModel = new PlayerModel(playerGameObject, name, username, pos, rot);
 
             ServerManager.Instance.ServerPlayerList.Add(playerModel);

@@ -640,6 +640,10 @@ PrefabInstance:
       propertyPath: IsDebug
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7296815984594002298, guid: 333c2f9fedc829b44965e62456054350, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8075753384914035603, guid: 333c2f9fedc829b44965e62456054350, type: 3}
       propertyPath: m_Name
       value: ServerManager
