@@ -1,5 +1,6 @@
 package com.assambra.app.service;
 
+import com.assambra.app.model.PlayerDespawnModel;
 import com.assambra.app.model.PlayerSpawnModel;
 import com.assambra.common.entity.Character;
 import com.assambra.common.entity.CharacterLocation;
@@ -63,7 +64,7 @@ public class PlayerService extends EzyLoggable {
                 .orElse(null);
     }
 
-    public PlayerSpawnModel getServerSpawnModel (Character character, CharacterLocation characterLocation)
+    public PlayerSpawnModel getPlayerSpawnModel (Character character, CharacterLocation characterLocation)
     {
         double[] pos = characterLocation.getPosition();
         double[] rot = characterLocation.getRotation();
@@ -85,6 +86,13 @@ public class PlayerService extends EzyLoggable {
                                 (float)rot[2]
                         ).toArray()
                 )
+                .build();
+    }
+
+    public PlayerDespawnModel getPlayerDespawnModel(String username)
+    {
+        return PlayerDespawnModel.builder()
+                .username(username)
                 .build();
     }
 }

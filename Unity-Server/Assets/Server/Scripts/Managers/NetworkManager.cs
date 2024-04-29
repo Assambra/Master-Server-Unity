@@ -7,7 +7,6 @@ using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Object = System.Object;
 
 namespace Assambra.Server
@@ -33,6 +32,7 @@ namespace Assambra.Server
             base.OnEnable();
             AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequest);
             AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
+            AddHandler<EzyObject>(Commands.PLAYER_DESPAWN, PlayerDespawnRequest);
         }
 
         private void Update()
@@ -151,38 +151,6 @@ namespace Assambra.Server
             appProxy.send(Commands.SERVER_TO_CLIENTS, data);
         }
 
-        public void SendSpawnToAllNearbyPlayers(List<string> usernames, string name, Vector3 position, Vector3 rotation)
-        {
-            ServerManager.Instance.ServerLog.ServerLogMessageInfo("Send spawn to all nearby players");
-            foreach(string user in usernames)
-                ServerManager.Instance.ServerLog.ServerLogMessageInfo("Send Spawn to player: " + user);
-
-            bool isLocalPlayer = false;
-            string room = "";
-
-            EzyArray positionArray = EzyEntityFactory.newArrayBuilder()
-                .append(position.x)
-                .append(position.y)
-                .append(position.z)
-                .build();
-
-            EzyArray rotationArray = EzyEntityFactory.newArrayBuilder()
-                .append(rotation.x)
-                .append(rotation.y)
-                .append(rotation.z)
-                .build();
-
-
-            SendServerToClients(usernames, "playerSpawn", new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("name", name),
-                new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
-                new KeyValuePair<string, object>("room", room),
-                new KeyValuePair<string, object>("position", positionArray),
-                new KeyValuePair<string, object>("rotation", rotationArray),
-            });
-        }
-
         #endregion
 
         #region RECEIVE
@@ -228,7 +196,71 @@ namespace Assambra.Server
             });
         }
 
+        private void PlayerDespawnRequest(EzyAppProxy proxy, EzyObject data)
+        {
+            string username = data.get<string>("username");
+
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"Receive command.PLAYER_DESPAWN for {username}");
+
+            PlayerModel playerModel = null;
+
+            foreach(PlayerModel p in ServerManager.Instance.ServerPlayerList)
+            {
+                if (p.Username == username)
+                {
+                    p.MasterServerRequestDespawn = true;
+
+                    Player player = p.PlayerGameObject.GetComponent<Player>();
+
+                    SendServerToClients(player.NearbyPlayer, "playerDespawn", new List<KeyValuePair<string, object>>
+                    {
+                        new KeyValuePair<string, object>("name", p.Name),
+                    });
+
+                    playerModel = p;
+                    Destroy(p.PlayerGameObject);
+                }
+            }
+
+            ServerManager.Instance.ServerPlayerList.Remove(playerModel);
+        }
+
         #endregion
+
+        public void SendSpawnToPlayer(string username, string name, Vector3 position, Vector3 rotation)
+        {
+            bool isLocalPlayer = false;
+            string room = "";
+
+            EzyArray positionArray = EzyEntityFactory.newArrayBuilder()
+                .append(position.x)
+                .append(position.y)
+                .append(position.z)
+                .build();
+
+            EzyArray rotationArray = EzyEntityFactory.newArrayBuilder()
+                .append(rotation.x)
+                .append(rotation.y)
+                .append(rotation.z)
+                .build();
+
+            SendServerToClient(username, "playerSpawn", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("name", name),
+                new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
+                new KeyValuePair<string, object>("room", room),
+                new KeyValuePair<string, object>("position", positionArray),
+                new KeyValuePair<string, object>("rotation", rotationArray),
+            });
+        }
+
+        public void SendDespawnToPlayer(string username, string name)
+        {
+            SendServerToClient(username, "playerDespawn", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("name", name)
+            });
+        }
     }
 }
 

@@ -30,4 +30,10 @@ public class ModelToResponseConverter {
                 .param("position", model.getPosition())
                 .param("rotation", model.getRotation());
     }
+
+    public EzyObjectResponse toResponse(PlayerDespawnModel model)
+    {
+        return responseFactory.newObjectResponse()
+                .param("username", model.getUsername());
+    }
 }

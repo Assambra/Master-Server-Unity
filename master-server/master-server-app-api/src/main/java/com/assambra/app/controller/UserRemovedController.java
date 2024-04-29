@@ -1,5 +1,6 @@
 package com.assambra.app.controller;
 
+import com.assambra.app.model.PlayerDespawnModel;
 import com.assambra.app.service.PlayerService;
 import com.assambra.app.service.RoomService;
 import com.assambra.common.masterserver.entity.UnityPlayer;
@@ -31,9 +32,10 @@ public class UserRemovedController extends EzyAbstractAppEventController<EzyUser
 
         for(UnityPlayer player : players)
         {
-            if(player.getUsername().equals(event.getUser().getName()));
+            if(player.getUsername().equals(event.getUser().getName()))
             {
-                roomService.removePlayerFromRoom(player);
+                PlayerDespawnModel playerDespawnModel = playerService.getPlayerDespawnModel(player.getUsername());
+                roomService.removePlayerFromRoom(player, playerDespawnModel);
                 playerService.removePlayerFromGlobalPlayerList(player);
             }
         }

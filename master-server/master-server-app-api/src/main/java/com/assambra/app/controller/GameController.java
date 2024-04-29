@@ -35,7 +35,7 @@ public class GameController extends EzyLoggable {
         player.setUsername(ezyuser.getName());
         playerService.addPlayerToGlobalPlayerList(player);
 
-        PlayerSpawnModel serverPlayerSpawnModel =  playerService.getServerSpawnModel(character, characterLocation);
+        PlayerSpawnModel serverPlayerSpawnModel = playerService.getPlayerSpawnModel(character, characterLocation);
 
         roomService.addPlayerToRoom(player, characterLocation.getRoom(), serverPlayerSpawnModel);
     }

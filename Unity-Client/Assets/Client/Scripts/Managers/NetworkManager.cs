@@ -34,6 +34,7 @@ namespace Assambra.Client
 
             AddHandler<EzyArray>(Commands.CHARACTER_LIST, CharacterListResponse);
             AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
+            AddHandler<EzyObject>(Commands.PLAYER_DESPAWN, PlayerDespawnRequest);
         }
 
         private void Update()
@@ -172,8 +173,10 @@ namespace Assambra.Client
 
         private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
         {
-            Debug.Log("Receive PLAYER_SPAWN request");
-            string name = data.get<string>("name");
+           
+            string name = data.get<string>("name"); 
+            Debug.Log($"Receive PLAYER_SPAWN request for {name}");
+            
             bool isLocalPlayer = data.get<bool>("isLocalPlayer");
             string room = data.get<string>("room");
             EzyArray position = data.get<EzyArray>("position");
@@ -189,10 +192,32 @@ namespace Assambra.Client
             }
             
             GameObject playerGameObject = GameManager.Instance.CreatePlayer(pos, rot);
+            playerGameObject.name = name;
 
             PlayerModel playerModel = new PlayerModel(playerGameObject, name, isLocalPlayer, room, pos, rot);
 
             GameManager.Instance.PlayerList.Add(playerModel);
+        }
+
+        private void PlayerDespawnRequest(EzyAppProxy proxy, EzyObject data)
+        {
+            string name = data.get<string>("name");
+            Debug.Log($"Receive PLAYER_DESPAWN request for {name}");
+
+            PlayerModel playerModel = null;
+
+            foreach(PlayerModel p in GameManager.Instance.PlayerList)
+            {
+                if (p.Name == name)
+                {
+                    if (p.PlayerGameObject != null)
+                        Destroy(p.PlayerGameObject);
+
+                    playerModel = p;
+                }
+            }
+
+            GameManager.Instance.PlayerList.Remove(playerModel);
         }
 
         #endregion

@@ -10,6 +10,7 @@ namespace Assambra.Server
     {
         public int Id { get => _id; set => _id = value; }
         public string Name { get => _name; set => _name = value; }
+        public List<string> NearbyPlayer { get => _nearbyPlayers; }
 
         public delegate void PlayerInteraction(Player player);
         public event PlayerInteraction PlayerEntered;
@@ -61,16 +62,27 @@ namespace Assambra.Server
             //Debug.Log($"{Name} has detected {otherEntity.Name} entering the area.");
             ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {player.Name} entering the area.");
 
-            PlayerModel playerModel = player.PlayerModel;
-            NetworkManager.Instance.SendSpawnToAllNearbyPlayers(_nearbyPlayers, playerModel.Name, playerModel.Position, playerModel.Rotation); 
+            if (gameObject.GetComponent<Player>() != null)
+            {
+                PlayerModel playerModel = gameObject.GetComponent<Player>().PlayerModel;
+                
+                NetworkManager.Instance.SendSpawnToPlayer(playerModel.Username, player.PlayerModel.Name, player.PlayerModel.Position, player.PlayerModel.Rotation);
+            }
         }
 
         private void OnPlayerExited(Player player)
         {
             //Debug.Log($"{Name} has detected {otherEntity.Name} leaving the area.");
             ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {player.Name} leaving the area.");
-
-            // Send despawn
+            
+            if (gameObject.GetComponent<Player>() != null)
+            {
+                PlayerModel playerModel = gameObject.GetComponent<Player>().PlayerModel;
+                if(!player.PlayerModel.MasterServerRequestDespawn)
+                {
+                    NetworkManager.Instance.SendDespawnToPlayer(playerModel.Username, player.PlayerModel.Name);
+                }
+            }
         }
 
         private void OnTriggerEnter(Collider other)
