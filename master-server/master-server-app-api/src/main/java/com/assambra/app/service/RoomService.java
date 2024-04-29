@@ -2,6 +2,7 @@ package com.assambra.app.service;
 
 import com.assambra.app.constant.Commands;
 import com.assambra.app.converter.ModelToResponseConverter;
+import com.assambra.app.model.PlayerDespawnModel;
 import com.assambra.app.model.PlayerSpawnModel;
 import com.assambra.common.masterserver.entity.UnityPlayer;
 import com.assambra.common.masterserver.entity.UnityRoom;
@@ -40,15 +41,16 @@ public class RoomService extends EzyLoggable {
                 .execute();
     }
 
-    public void removePlayerFromRoom(UnityPlayer player)
+    public void removePlayerFromRoom(UnityPlayer player, PlayerDespawnModel playerDespawnModel)
     {
         UnityRoom room = getRoom(player.getCurrentRoomId());
         room.removePlayer(player);
         player.setCurrentRoomId(0);
 
-        /* Todo
-        Send command. SERVER_PLAYER_DESPAWN to room server;
-         */
+        modelToResponseConverter.toResponse(playerDespawnModel)
+                .command(Commands.PLAYER_DESPAWN)
+                .username(room.getName())
+                .execute();
     }
 
     public boolean checkRoomPassword(String roomName, String roomPassword)

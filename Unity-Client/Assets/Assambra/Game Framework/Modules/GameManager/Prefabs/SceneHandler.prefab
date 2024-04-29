@@ -46,5 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Scenes:
   - {fileID: 11400000, guid: ff9ae85c8eff75348aa85883461bd44e, type: 2}
+  - {fileID: 11400000, guid: 2d4df90e50a1d6149b1371f9db2a331d, type: 2}
+  - {fileID: 11400000, guid: 1c9ffd2eef0b37846a5c5cdcfe89fd46, type: 2}
+  - {fileID: 11400000, guid: 807ab76a5f613f0448f7e5ea2b7c263d, type: 2}
   - {fileID: 11400000, guid: 891f543b6c0cbd942a229b9dba800674, type: 2}
   - {fileID: 11400000, guid: c69173f02eb5afa4fa9006c57609b3c3, type: 2}

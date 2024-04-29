@@ -7,6 +7,8 @@ namespace Assambra.Server
 {
     public class ServerManager : MonoBehaviour
     {
+        public bool IsDebug = false;
+
         public string Room { get => _room;}
         public string Password { get => _password; }
 
@@ -14,6 +16,8 @@ namespace Assambra.Server
         public List<PlayerModel> ServerPlayerList = new List<PlayerModel>();
         
         [SerializeField] private GameObject _playerPrefab;
+
+        public UIServerLog ServerLog;
         
         private string _username;
         private string _password;
@@ -45,27 +49,12 @@ namespace Assambra.Server
                     _room = args[i + 1];
                 }
             }
-        }
 
-        private void Start()
-        {
-            switch (_room)
+            if(IsDebug)
             {
-                case "Newcomer":
-                    GameManager.Instance.ChangeScene(Scenes.Newcomer);
-                    Debug.Log("Change server scene to Newcomer");
-                    break;
-                case "World":
-                    GameManager.Instance.ChangeScene(Scenes.World);
-                    Debug.Log("Change server scene to World");
-                    break;
-                case "BossRoom":
-                    GameManager.Instance.ChangeScene(Scenes.BossRoom);
-                    Debug.Log("Change server scene to World");
-                    break;
-                default:
-                    Debug.LogError("Receive unhandled room args");
-                    break;
+                _username = "Test";
+                _password = "123456";
+                _room = "Newcomer";
             }
         }
 
@@ -74,7 +63,28 @@ namespace Assambra.Server
             if(!doOnce && !String.IsNullOrEmpty(_room) && !String.IsNullOrEmpty(_username) && !String.IsNullOrEmpty(_password))
             {
                 doOnce = true;
-                NetworkManager.Instance.Login(_username, _password);
+
+                switch (_room)
+                {
+                    case "Newcomer":
+                        GameManager.Instance.ChangeScene(Scenes.Newcomer);
+                        Debug.Log("Change server scene to Newcomer");
+                        break;
+                    case "World":
+                        GameManager.Instance.ChangeScene(Scenes.World);
+                        Debug.Log("Change server scene to World");
+                        break;
+                    case "BossRoom":
+                        GameManager.Instance.ChangeScene(Scenes.BossRoom);
+                        Debug.Log("Change server scene to World");
+                        break;
+                    default:
+                        Debug.LogError("Receive unhandled room args");
+                        break;
+                }
+
+                if(!IsDebug)
+                    NetworkManager.Instance.Login(_username, _password);
             }
         }
 

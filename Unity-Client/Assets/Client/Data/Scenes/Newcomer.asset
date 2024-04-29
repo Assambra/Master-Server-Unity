@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfc5b32f8af3c3e42bb19b1e24d4a59c, type: 3}
   m_Name: Newcomer
   m_EditorClassIdentifier: 
+  ScenePath: Assets/Client/Scenes/Newcomer.unity
   IsFirstScene: 0
-  scenePaths:
-  - Assets/Client/Scenes/Newcomer.unity
-  SceneUISets:
-  - {fileID: 11400000, guid: 201053902e3761a48bf45699eb3c4e9f, type: 2}
+  SceneUISets: []

@@ -9,7 +9,7 @@ public final class Commands {
     public static final String CREATE_CHARACTER = "createCharacter";
     public static final String PLAY = "play";
     public static final String PLAYER_SPAWN = "playerSpawn";
-
+    public static final String PLAYER_DESPAWN = "playerDespawn";
 
     private Commands() {}
 }

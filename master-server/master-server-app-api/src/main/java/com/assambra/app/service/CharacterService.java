@@ -16,6 +16,7 @@ import com.tvd12.ezyfoxserver.entity.EzyUser;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,7 +71,12 @@ public class CharacterService extends EzyLoggable {
     {
         User user = userRepo.findByField("username", ezyUser.getName());
         Character character = characterRepo.findByField("userId", user.getId());
-        return characterLocationRepo.findListByField("characterId", character.getId());
+
+        List<CharacterLocation> characterLocations = new ArrayList<>();
+        if(character != null)
+            return characterLocationRepo.findListByField("characterId", character.getId());
+        else
+            return characterLocations;
     }
 
     public CharacterInfoListModel getCharacterInfoListModel(EzyUser ezyUser)

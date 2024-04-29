@@ -8,6 +8,7 @@ import com.tvd12.ezyfox.core.annotation.EzyDoHandle;
 import com.tvd12.ezyfox.core.annotation.EzyRequestController;
 import com.tvd12.ezyfox.entity.EzyArray;
 import com.tvd12.ezyfox.entity.EzyObject;
+import com.tvd12.ezyfox.util.EzyEntityArrays;
 import com.tvd12.ezyfox.util.EzyLoggable;
 import com.tvd12.ezyfoxserver.constant.EzyDisconnectReason;
 import com.tvd12.ezyfoxserver.entity.EzyUser;
@@ -102,7 +103,9 @@ public class ServerController extends EzyLoggable {
             Map<String, Object> requestData = request.toMap();
 
             String command = (String) requestData.remove("command");
-            EzyArray recipients = (EzyArray) requestData.remove("recipients");
+            List<Object> recipientsList = (List<Object>) requestData.remove("recipients");
+
+            EzyArray recipients = EzyEntityArrays.newArray(recipientsList);
 
             EzyObjectResponse response = responseFactory.newObjectResponse()
                     .command(command)
