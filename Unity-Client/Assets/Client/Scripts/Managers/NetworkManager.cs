@@ -181,9 +181,13 @@ namespace Assambra.Client
             Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
             Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
 
-            Scenes scenes = GameManager.Instance.getScenesByName(room);
-            GameManager.Instance.ChangeScene(scenes);
+            if(!string.IsNullOrEmpty(room))
+            {
+                Scenes scenes = GameManager.Instance.getScenesByName(room);
 
+                GameManager.Instance.ChangeScene(scenes);
+            }
+            
             GameObject playerGameObject = GameManager.Instance.CreatePlayer(pos, rot);
 
             PlayerModel playerModel = new PlayerModel(playerGameObject, name, isLocalPlayer, room, pos, rot);

@@ -11,16 +11,21 @@ namespace Assambra.Server
         public int Id { get => _id; set => _id = value; }
         public string Name { get => _name; set => _name = value; }
 
-        public delegate void EntityInteraction(Entity entity);
-        public event EntityInteraction EntityEntered;
-        public event EntityInteraction EntityExited;
+        public delegate void PlayerInteraction(Player player);
+        public event PlayerInteraction PlayerEntered;
+        public event PlayerInteraction PlayerExited;
 
         private int _id;
         private string _name;
-        private List<Entity> _nearbyEntities = new List<Entity>();
+
+        //private List<Player> _nearbyPlayers = new List<Player>();
+        private List<string> _nearbyPlayers = new List<string>();
 
         private SphereCollider _triggerCollider;
         private Rigidbody _rigidbody;
+
+        private Vector3 _lastPosition;
+        private Quaternion _lastRotation;
 
         protected virtual void Awake()
         {
@@ -31,45 +36,65 @@ namespace Assambra.Server
             _rigidbody = GetComponent<Rigidbody>();
             _rigidbody.isKinematic = true;
 
-            EntityEntered += OnEntityEntered;
-            EntityExited += OnEntityExited;
+            PlayerEntered += OnPlayerEntered;
+            PlayerExited += OnPlayerExited;
         }
 
         protected virtual void OnDestroy()
         {
-            EntityEntered -= OnEntityEntered;
-            EntityExited -= OnEntityExited;
+            PlayerEntered -= OnPlayerEntered;
+            PlayerExited -= OnPlayerExited;
         }
 
-        private void OnEntityEntered(Entity otherEntity)
+        private void FixedUpdate()
+        {
+            if(_lastPosition != transform.position  || _lastRotation != transform.rotation)
+            {
+                // Send position and rotation to all nearbyPlayers
+            }
+
+            _lastPosition = transform.position;
+        }
+
+        private void OnPlayerEntered(Player player)
         {
             //Debug.Log($"{Name} has detected {otherEntity.Name} entering the area.");
-            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherEntity.Name} entering the area.");
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {player.Name} entering the area.");
+
+            PlayerModel playerModel = player.PlayerModel;
+            NetworkManager.Instance.SendSpawnToAllNearbyPlayers(_nearbyPlayers, playerModel.Name, playerModel.Position, playerModel.Rotation); 
         }
 
-        private void OnEntityExited(Entity otherEntity)
+        private void OnPlayerExited(Player player)
         {
             //Debug.Log($"{Name} has detected {otherEntity.Name} leaving the area.");
-            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherEntity.Name} leaving the area.");
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {player.Name} leaving the area.");
+
+            // Send despawn
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            Entity otherEntity = other.GetComponent<Entity>();
-            if (otherEntity != null && !_nearbyEntities.Contains(otherEntity))
+            Player player = other.GetComponent<Player>();
+            string username = player.PlayerModel.Username;
+
+            if (player != null && !_nearbyPlayers.Contains(username))
             {
-                _nearbyEntities.Add(otherEntity);
-                EntityEntered?.Invoke(otherEntity);
+                //_nearbyPlayers.Add(player);
+                _nearbyPlayers.Add(username);
+                PlayerEntered?.Invoke(player);
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            Entity otherEntity = other.GetComponent<Entity>();
-            if (otherEntity != null && _nearbyEntities.Contains(otherEntity))
+            Player player = other.GetComponent<Player>();
+            string username = player.PlayerModel.Username;
+            if (player != null && _nearbyPlayers.Contains(username))
             {
-                _nearbyEntities.Remove(otherEntity);
-                EntityExited?.Invoke(otherEntity);
+                //_nearbyPlayers.Remove(player);
+                _nearbyPlayers.Remove(username);
+                PlayerExited?.Invoke(player);
             }
         }
     }
