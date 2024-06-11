@@ -18,8 +18,6 @@ namespace Assambra.Server
 
         private int _id;
         private string _name;
-
-        //private List<Player> _nearbyPlayers = new List<Player>();
         private List<string> _nearbyPlayers = new List<string>();
 
         private SphereCollider _triggerCollider;
@@ -55,58 +53,65 @@ namespace Assambra.Server
             }
 
             _lastPosition = transform.position;
+            _lastRotation = transform.rotation;
         }
 
-        private void OnPlayerEntered(Player player)
+        private void OnPlayerEntered(Player otherPlayer)
         {
-            //Debug.Log($"{Name} has detected {otherEntity.Name} entering the area.");
-            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {player.Name} entering the area.");
+            //ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherPlayer.Name} entering the area.");
 
-            if (gameObject.GetComponent<Player>() != null)
+            Player player = gameObject.GetComponent<Player>();
+
+            if (player != null)
             {
-                PlayerModel playerModel = gameObject.GetComponent<Player>().PlayerModel;
-                
-                NetworkManager.Instance.SendSpawnToPlayer(playerModel.Username, player.PlayerModel.Name, player.PlayerModel.Position, player.PlayerModel.Rotation);
+                NetworkManager.Instance.SendSpawnToPlayer(player.PlayerModel.Username, otherPlayer.PlayerModel.Name, otherPlayer.PlayerModel.Position, otherPlayer.PlayerModel.Rotation);
             }
         }
 
-        private void OnPlayerExited(Player player)
+        private void OnPlayerExited(Player otherPlayer)
         {
-            //Debug.Log($"{Name} has detected {otherEntity.Name} leaving the area.");
-            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {player.Name} leaving the area.");
-            
-            if (gameObject.GetComponent<Player>() != null)
+            //ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherPlayer.Name} leaving the area.");
+
+            Player player = gameObject.GetComponent<Player>();
+
+            if (player != null)
             {
-                PlayerModel playerModel = gameObject.GetComponent<Player>().PlayerModel;
-                if(!player.PlayerModel.MasterServerRequestDespawn)
+                if(!otherPlayer.PlayerModel.MasterServerRequestDespawn)
                 {
-                    NetworkManager.Instance.SendDespawnToPlayer(playerModel.Username, player.PlayerModel.Name);
+                    NetworkManager.Instance.SendDespawnToPlayer(player.PlayerModel.Username, otherPlayer.PlayerModel.Name);
                 }
             }
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            Player player = other.GetComponent<Player>();
-            string username = player.PlayerModel.Username;
+            Player otherPlayer = other.GetComponent<Player>();
 
-            if (player != null && !_nearbyPlayers.Contains(username))
+            if(otherPlayer != null)
             {
-                //_nearbyPlayers.Add(player);
-                _nearbyPlayers.Add(username);
-                PlayerEntered?.Invoke(player);
+                string username = otherPlayer.PlayerModel.Username;
+
+                if (!_nearbyPlayers.Contains(username))
+                {
+                    _nearbyPlayers.Add(username);
+                    PlayerEntered?.Invoke(otherPlayer);
+                }
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            Player player = other.GetComponent<Player>();
-            string username = player.PlayerModel.Username;
-            if (player != null && _nearbyPlayers.Contains(username))
+            Player otherPlayer = other.GetComponent<Player>();
+
+            if(otherPlayer != null) 
             {
-                //_nearbyPlayers.Remove(player);
-                _nearbyPlayers.Remove(username);
-                PlayerExited?.Invoke(player);
+                string username = otherPlayer.PlayerModel.Username;
+
+                if (_nearbyPlayers.Contains(username))
+                {
+                    _nearbyPlayers.Remove(username);
+                    PlayerExited?.Invoke(otherPlayer);
+                }
             }
         }
     }
