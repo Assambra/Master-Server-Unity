@@ -30,6 +30,7 @@ namespace Assambra.Server
         {
             _triggerCollider = GetComponent<SphereCollider>();
             _triggerCollider.isTrigger = true;
+            _triggerCollider.center = new Vector3(0, 1, 0);
             _triggerCollider.radius = ServerConstants.AREA_OF_INTEREST;
 
             _rigidbody = GetComponent<Rigidbody>();
@@ -58,7 +59,7 @@ namespace Assambra.Server
 
         private void OnPlayerEntered(Player otherPlayer)
         {
-            //ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherPlayer.Name} entering the area.");
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherPlayer.Name} entering the area.");
 
             Player player = gameObject.GetComponent<Player>();
 
@@ -70,7 +71,7 @@ namespace Assambra.Server
 
         private void OnPlayerExited(Player otherPlayer)
         {
-            //ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherPlayer.Name} leaving the area.");
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherPlayer.Name} leaving the area.");
 
             Player player = gameObject.GetComponent<Player>();
 
