@@ -173,7 +173,6 @@ namespace Assambra.Client
 
         private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
         {
-           
             string name = data.get<string>("name"); 
             Debug.Log($"Receive PLAYER_SPAWN request for {name}");
             
@@ -193,8 +192,10 @@ namespace Assambra.Client
             
             GameObject playerGameObject = GameManager.Instance.CreatePlayer(pos, rot);
             playerGameObject.name = name;
+            PlayerController playerController = playerGameObject.GetComponent<PlayerController>();
 
             PlayerModel playerModel = new PlayerModel(playerGameObject, name, isLocalPlayer, room, pos, rot);
+            playerController.PlayerModel = playerModel;
 
             GameManager.Instance.PlayerList.Add(playerModel);
         }
