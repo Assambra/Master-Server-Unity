@@ -10,14 +10,20 @@ namespace Assambra.Server
     {
         public int Id { get => _id; set => _id = value; }
         public string Name { get => _name; set => _name = value; }
-        public List<string> NearbyPlayer { get => _nearbyPlayers; }
+        public bool IsStatic { get => _isStatic; set => _isStatic = value; }
+        public EntityType EntityType { get => _entityType; set => _entityType = value; }
 
+        public List<string> NearbyPlayer { get => _nearbyPlayers; }
+        
         public delegate void PlayerInteraction(Player player);
         public event PlayerInteraction PlayerEntered;
         public event PlayerInteraction PlayerExited;
 
         private int _id;
         private string _name;
+        private bool _isStatic;
+        private EntityType _entityType;
+
         private List<string> _nearbyPlayers = new List<string>();
 
         private SphereCollider _triggerCollider;
@@ -48,13 +54,20 @@ namespace Assambra.Server
 
         private void FixedUpdate()
         {
-            if(_lastPosition != transform.position  || _lastRotation != transform.rotation)
+            if (_isStatic)
+                return;
+
+            if (_lastPosition != transform.position || _lastRotation != transform.rotation)
             {
-                // Send position and rotation to all nearbyPlayers
+                foreach (string username in _nearbyPlayers)
+                {
+
+                }
             }
 
             _lastPosition = transform.position;
             _lastRotation = transform.rotation;
+
         }
 
         private void OnPlayerEntered(Player otherPlayer)
