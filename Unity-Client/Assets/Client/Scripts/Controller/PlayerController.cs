@@ -14,6 +14,7 @@ namespace Assambra.Client
         private Vector3 _playerVelocity;
         private bool _groundedPlayer;
         private float _playerSpeed = 2.0f;
+        private float _rotationSpeed = 150f;
         private float _jumpHeight = 1.0f;
         private float _gravityValue = -9.81f;
 
@@ -42,12 +43,8 @@ namespace Assambra.Client
 
             _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
             
-            _characterController.Move(_move * Time.deltaTime * _playerSpeed);
-
-            if (_move != Vector3.zero)
-            {
-                gameObject.transform.forward = _move;
-            }
+            _characterController.Move(transform.forward * _move.z * Time.deltaTime * _playerSpeed);
+            transform.Rotate(new Vector3(0, _move.x * _rotationSpeed * Time.deltaTime, 0));
 
             // Changes the height position of the player..
             if (Input.GetButtonDown("Jump") && _groundedPlayer)
