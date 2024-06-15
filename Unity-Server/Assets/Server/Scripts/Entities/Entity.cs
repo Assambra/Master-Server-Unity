@@ -8,7 +8,7 @@ namespace Assambra.Server
 
     public abstract class Entity : MonoBehaviour
     {
-        public int Id { get => _id; set => _id = value; }
+        public long Id { get => _id; set => _id = value; }
         public string Name { get => _name; set => _name = value; }
         public bool IsStatic { get => _isStatic; set => _isStatic = value; }
         public EntityType EntityType { get => _entityType; set => _entityType = value; }
@@ -19,7 +19,7 @@ namespace Assambra.Server
         public event PlayerInteraction PlayerEntered;
         public event PlayerInteraction PlayerExited;
 
-        private int _id;
+        private long _id;
         private string _name;
         private bool _isStatic;
         private EntityType _entityType;
@@ -44,6 +44,9 @@ namespace Assambra.Server
 
             PlayerEntered += OnPlayerEntered;
             PlayerExited += OnPlayerExited;
+
+            _lastPosition = transform.position;
+            _lastRotation = transform.rotation;
         }
 
         protected virtual void OnDestroy()
@@ -61,13 +64,12 @@ namespace Assambra.Server
             {
                 foreach (string username in _nearbyPlayers)
                 {
-
+                    NetworkManager.Instance.SendUpdateEntityPosition(username, _id, transform.position, transform.rotation.eulerAngles);
                 }
             }
 
             _lastPosition = transform.position;
             _lastRotation = transform.rotation;
-
         }
 
         private void OnPlayerEntered(Player otherPlayer)
@@ -78,7 +80,7 @@ namespace Assambra.Server
 
             if (player != null)
             {
-                NetworkManager.Instance.SendSpawnToPlayer(player.PlayerModel.Username, otherPlayer.PlayerModel.Name, otherPlayer.PlayerModel.Position, otherPlayer.PlayerModel.Rotation);
+                NetworkManager.Instance.SendSpawnToPlayer(player.PlayerModel.Username, otherPlayer.PlayerModel.Id, otherPlayer.PlayerModel.Name, otherPlayer.PlayerModel.Position, otherPlayer.PlayerModel.Rotation);
             }
         }
 
@@ -92,7 +94,7 @@ namespace Assambra.Server
             {
                 if(!otherPlayer.PlayerModel.MasterServerRequestDespawn)
                 {
-                    NetworkManager.Instance.SendDespawnToPlayer(player.PlayerModel.Username, otherPlayer.PlayerModel.Name);
+                    NetworkManager.Instance.SendDespawnToPlayer(player.PlayerModel.Username, otherPlayer.PlayerModel.Id,  otherPlayer.PlayerModel.Name);
                 }
             }
         }

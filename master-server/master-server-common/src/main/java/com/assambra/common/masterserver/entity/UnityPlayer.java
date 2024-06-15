@@ -8,6 +8,9 @@ public class UnityPlayer extends Player {
     public UnityPlayer(String name) {
         super(name);
     }
+
+    @Getter @Setter
+    protected Long id;
     @Getter @Setter
     protected String username;
 

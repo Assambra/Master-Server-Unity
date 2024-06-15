@@ -70,6 +70,7 @@ public class PlayerService extends EzyLoggable {
         double[] rot = characterLocation.getRotation();
 
         return PlayerSpawnModel.builder()
+                .id(character.getId())
                 .name(character.getName())
                 .username(character.getUsername())
                 .position(
@@ -89,9 +90,10 @@ public class PlayerService extends EzyLoggable {
                 .build();
     }
 
-    public PlayerDespawnModel getPlayerDespawnModel(String username)
+    public PlayerDespawnModel getPlayerDespawnModel(Long id, String username)
     {
         return PlayerDespawnModel.builder()
+                .id(id)
                 .username(username)
                 .build();
     }

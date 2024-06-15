@@ -35,6 +35,7 @@ namespace Assambra.Client
             AddHandler<EzyArray>(Commands.CHARACTER_LIST, CharacterListResponse);
             AddHandler<EzyObject>(Commands.PLAYER_SPAWN, ReceivePlayerSpawn);
             AddHandler<EzyObject>(Commands.PLAYER_DESPAWN, ReceivePlayerDespawn);
+            AddHandler<EzyObject>(Commands.UPDATE_ENTITY_POSITION, ReceiveUpdateEntityPosition);
         }
 
         private void Update()
@@ -177,6 +178,7 @@ namespace Assambra.Client
 
         private void ReceivePlayerSpawn(EzyAppProxy proxy, EzyObject data)
         {
+            long id = data.get<long>("id");
             string name = data.get<string>("name");
             Debug.Log($"Receive PLAYER_SPAWN request for {name}");
 
@@ -198,8 +200,11 @@ namespace Assambra.Client
             playerGameObject.name = name;
             PlayerController playerController = playerGameObject.GetComponent<PlayerController>();
 
-            PlayerModel playerModel = new PlayerModel(playerGameObject, name, isLocalPlayer, room, pos, rot);
+            PlayerModel playerModel = new PlayerModel(id, name, isLocalPlayer, room, playerGameObject, pos, rot);
             playerController.PlayerModel = playerModel;
+            
+            if (!isLocalPlayer)
+                playerController.CharacterController.enabled = false;
 
             GameManager.Instance.PlayerList.Add(playerModel);
         }
@@ -223,6 +228,26 @@ namespace Assambra.Client
             }
 
             GameManager.Instance.PlayerList.Remove(playerModel);
+        }
+
+        private void ReceiveUpdateEntityPosition(EzyAppProxy proxy, EzyObject data)
+        {
+            long id = data.get<long>("id");
+            EzyArray position = data.get<EzyArray>("position");
+            EzyArray rotation = data.get<EzyArray>("rotation");
+
+            Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
+            Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
+            
+            foreach (PlayerModel player in GameManager.Instance.PlayerList)
+            {
+                if(id == player.Id)
+                {
+                    player.PlayerGameObject.transform.position = pos;                   
+                    player.PlayerGameObject.transform.rotation = Quaternion.Euler(rot);
+                }
+            }
+            Debug.Log($"Receive UPDATE_ENTITY_POSITION request for {name} with Id: {id} ");
         }
 
         #endregion

@@ -6,7 +6,8 @@ namespace Assambra.Client
     public class PlayerController : MonoBehaviour
     {
         public PlayerModel PlayerModel;
-        
+        public CharacterController CharacterController { get => _characterController;}
+
         private CharacterController _characterController;
         private Vector3 _input;
         private Vector3 _move;
@@ -18,10 +19,13 @@ namespace Assambra.Client
 
         private bool sendOnceZero = false;
 
+        private void Awake()
+        {
+            _characterController = gameObject.GetComponent<CharacterController>();
+        }
 
         private void Start()
         {
-            _characterController = gameObject.GetComponent<CharacterController>();
             _characterController.center = new Vector3(0, 1, 0);
         }
 

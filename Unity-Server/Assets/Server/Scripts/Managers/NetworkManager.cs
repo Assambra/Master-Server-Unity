@@ -104,6 +104,7 @@ namespace Assambra.Server
         {
             Debug.Log("Receive PLAYER_SPAWN request");
 
+            long id = data.get<long>("id");
             string name = data.get<string>("name");
             string username = data.get<string>("username");
             EzyArray position = data.get<EzyArray>("position");
@@ -113,11 +114,12 @@ namespace Assambra.Server
 
             GameObject playerGameObject = ServerManager.Instance.CreatePlayer(pos, rot);
 
-            PlayerModel playerModel = new PlayerModel(playerGameObject, name, username, pos, rot);
+            PlayerModel playerModel = new PlayerModel(id, name, username, playerGameObject, pos, rot);
 
             ServerManager.Instance.ServerPlayerList.Add(playerModel);
 
             Player player = playerGameObject.GetComponent<Player>();
+            player.Id = id;
             player.Name = name;
             player.PlayerModel = playerModel;
 
@@ -125,6 +127,7 @@ namespace Assambra.Server
             bool isLocalPlayer = true;
             SendServerToClient(username, "playerSpawn", new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>("id", id),
                 new KeyValuePair<string, object>("name", name),
                 new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
                 new KeyValuePair<string, object>("room", ServerManager.Instance.Room),
@@ -135,6 +138,7 @@ namespace Assambra.Server
 
         private void PlayerDespawnRequest(EzyAppProxy proxy, EzyObject data)
         {
+            long id = data.get<long>("id");
             string username = data.get<string>("username");
 
             ServerManager.Instance.ServerLog.ServerLogMessageInfo($"Receive command.PLAYER_DESPAWN for {username}");
@@ -143,7 +147,7 @@ namespace Assambra.Server
 
             foreach (PlayerModel p in ServerManager.Instance.ServerPlayerList)
             {
-                if (p.Username == username)
+                if (p.Id == id)
                 {
                     p.MasterServerRequestDespawn = true;
 
@@ -151,6 +155,7 @@ namespace Assambra.Server
 
                     SendServerToClients(player.NearbyPlayer, "playerDespawn", new List<KeyValuePair<string, object>>
                     {
+                        new KeyValuePair<string, object>("id", p.Id),
                         new KeyValuePair<string, object>("name", p.Name),
                     });
 
@@ -189,7 +194,7 @@ namespace Assambra.Server
 
         #region SEND TO CLIENT
 
-        public void SendSpawnToPlayer(string username, string name, Vector3 position, Vector3 rotation)
+        public void SendSpawnToPlayer(string username, long id, string name, Vector3 position, Vector3 rotation)
         {
             bool isLocalPlayer = false;
             string room = "";
@@ -208,6 +213,7 @@ namespace Assambra.Server
 
             SendServerToClient(username, "playerSpawn", new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>("id", id),
                 new KeyValuePair<string, object>("name", name),
                 new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
                 new KeyValuePair<string, object>("room", room),
@@ -216,11 +222,34 @@ namespace Assambra.Server
             });
         }
 
-        public void SendDespawnToPlayer(string username, string name)
+        public void SendDespawnToPlayer(string username, long id, string name)
         {
             SendServerToClient(username, "playerDespawn", new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>("id", id),
                 new KeyValuePair<string, object>("name", name)
+            });
+        }
+
+        public void SendUpdateEntityPosition(string username, long id, Vector3 position, Vector3 rotation)
+        {
+            EzyArray positionArray = EzyEntityFactory.newArrayBuilder()
+                .append(position.x)
+                .append(position.y)
+                .append(position.z)
+                .build();
+
+            EzyArray rotationArray = EzyEntityFactory.newArrayBuilder()
+                .append(rotation.x)
+                .append(rotation.y)
+                .append(rotation.z)
+                .build();
+
+            SendServerToClient(username, "updateEntityPosition", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("id", id),
+                new KeyValuePair<string, object>("position", positionArray),
+                new KeyValuePair<string, object>("rotation", rotationArray)
             });
         }
 

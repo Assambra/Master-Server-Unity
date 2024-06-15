@@ -25,6 +25,7 @@ public class ModelToResponseConverter {
     public EzyObjectResponse toResponse(PlayerSpawnModel model)
     {
         return responseFactory.newObjectResponse()
+                .param("id", model.getId())
                 .param("name", model.getName())
                 .param("username", model.getUsername())
                 .param("position", model.getPosition())
@@ -34,6 +35,7 @@ public class ModelToResponseConverter {
     public EzyObjectResponse toResponse(PlayerDespawnModel model)
     {
         return responseFactory.newObjectResponse()
+                .param("id", model.getId())
                 .param("username", model.getUsername());
     }
 }
