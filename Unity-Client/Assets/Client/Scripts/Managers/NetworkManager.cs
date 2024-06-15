@@ -8,6 +8,8 @@ using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.Windows;
 using Object = System.Object;
 
 namespace Assambra.Client
@@ -33,8 +35,8 @@ namespace Assambra.Client
             base.OnEnable();
 
             AddHandler<EzyArray>(Commands.CHARACTER_LIST, CharacterListResponse);
-            AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
-            AddHandler<EzyObject>(Commands.PLAYER_DESPAWN, PlayerDespawnRequest);
+            AddHandler<EzyObject>(Commands.PLAYER_SPAWN, ReceivePlayerSpawn);
+            AddHandler<EzyObject>(Commands.PLAYER_DESPAWN, ReceivePlayerDespawn);
         }
 
         private void Update()
@@ -82,7 +84,7 @@ namespace Assambra.Client
             socketProxy.connect();
         }
 
-        #region SEND
+        #region MASTER SERVER REQUESTS
 
         public void CharacterListRequest()
         {
@@ -109,27 +111,9 @@ namespace Assambra.Client
             appProxy.send(Commands.PLAY, data);
         }
 
-        private void SendClientToServer(string room, string command, List<KeyValuePair<string, object>> additionalParams)
-        {
-            Debug.Log("SendClientToServer");
-
-            var dataBuilder = EzyEntityFactory.newObjectBuilder()
-                .append("room", room)
-                .append("command", command);
-
-            foreach (var pair in additionalParams)
-            {
-                dataBuilder.append(pair.Key, pair.Value);
-            }
-
-            EzyObject data = dataBuilder.build();
-
-            appProxy.send(Commands.CLIENT_TO_SERVER, data);
-        }
-
         #endregion
 
-        #region RECEIVE
+        #region MASTER SERVER RESPONSE
 
         private void LoginSuccessResponse(EzySocketProxy proxy, Object data)
         {
@@ -171,11 +155,33 @@ namespace Assambra.Client
             }
         }
 
-        private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
+        #endregion
+
+        #region SEND TO ROOM SERVER
+
+        public void SendPlayerInput(string room, Vector3 input)
         {
-            string name = data.get<string>("name"); 
+            EzyArray inputArray = EzyEntityFactory.newArrayBuilder()
+            .append(input.x)
+            .append(input.z)
+            .build();
+
+            SendClientToServer(room, "playerInput", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("room", room),
+                new KeyValuePair<string, object>("input", inputArray)
+            });
+        }
+
+        #endregion
+
+        #region RECEIVE FROM ROOM SERVER 
+
+        private void ReceivePlayerSpawn(EzyAppProxy proxy, EzyObject data)
+        {
+            string name = data.get<string>("name");
             Debug.Log($"Receive PLAYER_SPAWN request for {name}");
-            
+
             bool isLocalPlayer = data.get<bool>("isLocalPlayer");
             string room = data.get<string>("room");
             EzyArray position = data.get<EzyArray>("position");
@@ -183,13 +189,13 @@ namespace Assambra.Client
             Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
             Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
 
-            if(!string.IsNullOrEmpty(room))
+            if (!string.IsNullOrEmpty(room))
             {
                 Scenes scenes = GameManager.Instance.getScenesByName(room);
 
                 GameManager.Instance.ChangeScene(scenes);
             }
-            
+
             GameObject playerGameObject = GameManager.Instance.CreatePlayer(pos, rot);
             playerGameObject.name = name;
             PlayerController playerController = playerGameObject.GetComponent<PlayerController>();
@@ -200,14 +206,14 @@ namespace Assambra.Client
             GameManager.Instance.PlayerList.Add(playerModel);
         }
 
-        private void PlayerDespawnRequest(EzyAppProxy proxy, EzyObject data)
+        private void ReceivePlayerDespawn(EzyAppProxy proxy, EzyObject data)
         {
             string name = data.get<string>("name");
             Debug.Log($"Receive PLAYER_DESPAWN request for {name}");
 
             PlayerModel playerModel = null;
 
-            foreach(PlayerModel p in GameManager.Instance.PlayerList)
+            foreach (PlayerModel p in GameManager.Instance.PlayerList)
             {
                 if (p.Name == name)
                 {
@@ -219,6 +225,28 @@ namespace Assambra.Client
             }
 
             GameManager.Instance.PlayerList.Remove(playerModel);
+        }
+
+        #endregion
+
+        #region CLIENT TO ROOM SERVER MESSAGE
+
+        private void SendClientToServer(string room, string command, List<KeyValuePair<string, object>> additionalParams)
+        {
+            Debug.Log("SendClientToServer");
+
+            var dataBuilder = EzyEntityFactory.newObjectBuilder()
+                .append("room", room)
+                .append("command", command);
+
+            foreach (var pair in additionalParams)
+            {
+                dataBuilder.append(pair.Key, pair.Value);
+            }
+
+            EzyObject data = dataBuilder.build();
+
+            appProxy.send(Commands.CLIENT_TO_SERVER, data);
         }
 
         #endregion
