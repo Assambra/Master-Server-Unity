@@ -6,7 +6,9 @@ using com.tvd12.ezyfoxserver.client.request;
 using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 using Object = System.Object;
 
 namespace Assambra.Server
@@ -102,8 +104,6 @@ namespace Assambra.Server
 
         private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
         {
-            Debug.Log("Receive PLAYER_SPAWN request");
-
             long id = data.get<long>("id");
             string name = data.get<string>("name");
             string username = data.get<string>("username");
@@ -112,16 +112,23 @@ namespace Assambra.Server
             Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
             Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
 
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"Receive command.PLAYER_SPAWN for Id: {id} Name: {name}");
+
             GameObject playerGameObject = ServerManager.Instance.CreatePlayer(pos, rot);
-
-            PlayerModel playerModel = new PlayerModel(id, name, username, playerGameObject, pos, rot);
-
-            ServerManager.Instance.ServerPlayerList.Add(playerModel);
-
+            playerGameObject.name = name;
+            
             Player player = playerGameObject.GetComponent<Player>();
-            player.Id = id;
-            player.Name = name;
-            player.PlayerModel = playerModel;
+
+            if (player != null)
+            {
+                player.Initialize((uint)id, name, playerGameObject, false, EntityType.Player, username);
+                player.SetPlayerHeadinfoName(name);
+                ServerManager.Instance.ServerEntities.Add((uint)id, player);
+            }
+            else
+            {
+                Debug.LogError("Player component not found on the playerGameObject.");
+            }
 
             // Send PlayerSpawn to client
             bool isLocalPlayer = true;
@@ -139,32 +146,24 @@ namespace Assambra.Server
         private void PlayerDespawnRequest(EzyAppProxy proxy, EzyObject data)
         {
             long id = data.get<long>("id");
-            string username = data.get<string>("username");
 
-            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"Receive command.PLAYER_DESPAWN for {username}");
-
-            PlayerModel playerModel = null;
-
-            foreach (PlayerModel p in ServerManager.Instance.ServerPlayerList)
+            if (ServerManager.Instance.ServerEntities.TryGetValue((uint)id, out Entity entity))
             {
-                if (p.Id == id)
+                ServerManager.Instance.ServerLog.ServerLogMessageInfo($"Receive command.PLAYER_DESPAWN for Id: {id} Name: {entity.Name}");
+                
+                if (entity is Player player)
                 {
-                    p.MasterServerRequestDespawn = true;
-
-                    Player player = p.PlayerGameObject.GetComponent<Player>();
-
-                    SendServerToClients(player.NearbyPlayer, "playerDespawn", new List<KeyValuePair<string, object>>
+                    player.MasterServerRequestedDespawn = true;
+                    List<string> usernames = player.NearbyPlayers.Values.Select(player => player.Username).ToList();
+                    SendServerToClients(usernames, "playerDespawn", new List<KeyValuePair<string, object>>
                     {
-                        new KeyValuePair<string, object>("id", p.Id),
-                        new KeyValuePair<string, object>("name", p.Name),
+                        new KeyValuePair<string, object>("id", (long)player.Id),
                     });
 
-                    playerModel = p;
-                    Destroy(p.PlayerGameObject);
+                    Destroy(player.EntityGameObject);
+                    ServerManager.Instance.ServerEntities.Remove(player.Id);
                 }
             }
-
-            ServerManager.Instance.ServerPlayerList.Remove(playerModel);
         }
 
         #endregion
@@ -222,12 +221,11 @@ namespace Assambra.Server
             });
         }
 
-        public void SendDespawnToPlayer(string username, long id, string name)
+        public void SendDespawnToPlayer(string username, long id)
         {
             SendServerToClient(username, "playerDespawn", new List<KeyValuePair<string, object>>
             {
                 new KeyValuePair<string, object>("id", id),
-                new KeyValuePair<string, object>("name", name)
             });
         }
 
@@ -259,16 +257,16 @@ namespace Assambra.Server
 
         private void ReceivePlayerInput(EzyAppProxy proxy, EzyObject data)
         {
-            string username = data.get<string>("username");
+            long id = data.get<long>("id");
             EzyArray inputArray = data.get<EzyArray>("input");
 
             Vector2 input = new Vector2(inputArray.get<float>(0), inputArray.get<float>(1));
 
-            foreach(PlayerModel player in ServerManager.Instance.ServerPlayerList)
+            if (ServerManager.Instance.ServerEntities.TryGetValue((uint)id, out Entity entity))
             {
-                if(string.Equals(player.Username, username))
+                if (entity is Player player)
                 {
-                    PlayerController playerController = player.PlayerGameObject.GetComponent<PlayerController>();
+                    PlayerController playerController = player.EntityGameObject.GetComponent<PlayerController>();
                     playerController.Move = new Vector3(input.x, 0, input.y);
                 }
             }

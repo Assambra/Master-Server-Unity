@@ -1,5 +1,4 @@
 using Assambra.GameFramework.GameManager;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,11 +6,12 @@ namespace Assambra.Client
 {
     public class GameManager : BaseGameManager
     {
+        [SerializeField] private GameObject _playerPrefab;
+        
         public static GameManager Instance;
         public List<CharacterInfoModel> CharacterInfos = new List<CharacterInfoModel>();
-        public List<PlayerModel> PlayerList = new List<PlayerModel>();
+        public Dictionary<uint, Entity> ClientEntities = new Dictionary<uint, Entity>();
 
-        [SerializeField] private GameObject _playerPrefab;
         private void Awake()
         {
             if (Instance != null && Instance != this)

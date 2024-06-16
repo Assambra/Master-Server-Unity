@@ -5,8 +5,9 @@ namespace Assambra.Client
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : MonoBehaviour
     {
-        public PlayerModel PlayerModel;
-        public CharacterController CharacterController { get => _characterController;}
+        public Player Player { get => _player; set => _player = value; }
+
+        private Player _player;
 
         private CharacterController _characterController;
         private Vector3 _input;
@@ -32,7 +33,7 @@ namespace Assambra.Client
 
         void Update()
         {
-            if (!PlayerModel.IsLocalPlayer)
+            if (!_player.IsLocalPlayer)
                 return;
 
             _groundedPlayer = _characterController.isGrounded;
@@ -65,7 +66,7 @@ namespace Assambra.Client
                 else
                     sendOnceZero = false;
 
-                NetworkManager.Instance.SendPlayerInput(PlayerModel.Room, _input);
+                NetworkManager.Instance.SendPlayerInput(_player.Id, _player.Room, _input);
                 _move = _input;
             }                
         }

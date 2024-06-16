@@ -5,7 +5,9 @@ namespace Assambra.Server
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : MonoBehaviour
     {
-        public Vector3 Move;
+        public Vector3 Move { set => _move = value; }
+
+        private Vector3 _move;
 
         private CharacterController _characterController;
         private Vector3 _playerVelocity;
@@ -29,10 +31,9 @@ namespace Assambra.Server
                 _playerVelocity.y = 0f;
             }
 
-            _characterController.Move(transform.forward * Move.z * Time.deltaTime * _playerSpeed);
-            transform.Rotate(new Vector3(0, Move.x * _rotationSpeed * Time.deltaTime, 0));
+            _characterController.Move(transform.forward * _move.z * Time.deltaTime * _playerSpeed);
+            transform.Rotate(new Vector3(0, _move.x * _rotationSpeed * Time.deltaTime, 0));
 
-            // Changes the height position of the player..
             if (Input.GetButtonDown("Jump") && _groundedPlayer)
             {
                 _playerVelocity.y += Mathf.Sqrt(_jumpHeight * -3.0f * _gravityValue);

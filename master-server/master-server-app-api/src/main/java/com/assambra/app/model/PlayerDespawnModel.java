@@ -7,5 +7,4 @@ import lombok.Getter;
 @Builder
 public class PlayerDespawnModel {
     private Long id;
-    private String username;
 }

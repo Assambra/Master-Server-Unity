@@ -90,11 +90,10 @@ public class PlayerService extends EzyLoggable {
                 .build();
     }
 
-    public PlayerDespawnModel getPlayerDespawnModel(Long id, String username)
+    public PlayerDespawnModel getPlayerDespawnModel(Long id)
     {
         return PlayerDespawnModel.builder()
                 .id(id)
-                .username(username)
                 .build();
     }
 }

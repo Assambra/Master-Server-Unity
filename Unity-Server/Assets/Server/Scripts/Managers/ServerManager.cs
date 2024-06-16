@@ -13,7 +13,8 @@ namespace Assambra.Server
         public string Password { get => _password; }
 
         public static ServerManager Instance { get; private set; }
-        public List<PlayerModel> ServerPlayerList = new List<PlayerModel>();
+        
+        public Dictionary<uint, Entity> ServerEntities = new Dictionary<uint, Entity>();
         
         [SerializeField] private GameObject _playerPrefab;
 

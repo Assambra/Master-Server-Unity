@@ -158,15 +158,16 @@ namespace Assambra.Client
 
         #region SEND TO ROOM SERVER
 
-        public void SendPlayerInput(string room, Vector3 input)
+        public void SendPlayerInput(long id, string room, Vector3 input)
         {
             EzyArray inputArray = EzyEntityFactory.newArrayBuilder()
-            .append(input.x)
-            .append(input.z)
-            .build();
+                .append(input.x)
+                .append(input.z)
+                .build();
 
             SendClientToServer(room, "playerInput", new List<KeyValuePair<string, object>>
             {
+                new KeyValuePair<string, object>("id", id),
                 new KeyValuePair<string, object>("room", room),
                 new KeyValuePair<string, object>("input", inputArray)
             });
@@ -180,7 +181,7 @@ namespace Assambra.Client
         {
             long id = data.get<long>("id");
             string name = data.get<string>("name");
-            Debug.Log($"Receive PLAYER_SPAWN request for {name}");
+            //Debug.Log($"Receive PLAYER_SPAWN request for {name}");
 
             bool isLocalPlayer = data.get<bool>("isLocalPlayer");
             string room = data.get<string>("room");
@@ -198,36 +199,41 @@ namespace Assambra.Client
 
             GameObject playerGameObject = GameManager.Instance.CreatePlayer(pos, rot);
             playerGameObject.name = name;
+
+            Player player = playerGameObject.GetComponent<Player>();
             PlayerController playerController = playerGameObject.GetComponent<PlayerController>();
-
-            PlayerModel playerModel = new PlayerModel(id, name, isLocalPlayer, room, playerGameObject, pos, rot);
-            playerController.PlayerModel = playerModel;
             
-            if (!isLocalPlayer)
-                playerController.CharacterController.enabled = false;
+            if(playerController != null)
+                playerController.Player = player;
+            else
+                Debug.LogError("PlayerController component not found on the playerGameObject.");
 
-            GameManager.Instance.PlayerList.Add(playerModel);
+            if (player != null)
+            {
+                player.Initialize((uint)id, name, playerGameObject, room, isLocalPlayer);
+                player.SetPlayerHeadinfoName(name);
+                
+                GameManager.Instance.ClientEntities.Add((uint)id, player);
+            }
+            else
+            {
+                Debug.LogError("Player component not found on the playerGameObject.");
+            }
         }
 
         private void ReceivePlayerDespawn(EzyAppProxy proxy, EzyObject data)
         {
-            string name = data.get<string>("name");
-            Debug.Log($"Receive PLAYER_DESPAWN request for {name}");
+            long id = data.get<long>("id");
+            //Debug.Log($"Receive PLAYER_DESPAWN request for {id}");
 
-            PlayerModel playerModel = null;
-
-            foreach (PlayerModel p in GameManager.Instance.PlayerList)
+            if (GameManager.Instance.ClientEntities.TryGetValue((uint)id, out Entity entity))
             {
-                if (p.Name == name)
+                if (entity is Player player)
                 {
-                    if (p.PlayerGameObject != null)
-                        Destroy(p.PlayerGameObject);
-
-                    playerModel = p;
+                    Destroy(player.EntityGameObject);
+                    GameManager.Instance.ClientEntities.Remove(player.Id);
                 }
             }
-
-            GameManager.Instance.PlayerList.Remove(playerModel);
         }
 
         private void ReceiveUpdateEntityPosition(EzyAppProxy proxy, EzyObject data)
@@ -238,16 +244,16 @@ namespace Assambra.Client
 
             Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
             Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
-            
-            foreach (PlayerModel player in GameManager.Instance.PlayerList)
+
+            if (GameManager.Instance.ClientEntities.TryGetValue((uint)id, out Entity entity))
             {
-                if(id == player.Id)
+                if (entity.Id == id)
                 {
-                    player.PlayerGameObject.transform.position = pos;                   
-                    player.PlayerGameObject.transform.rotation = Quaternion.Euler(rot);
+                    entity.EntityGameObject.transform.position = pos;
+                    entity.EntityGameObject.transform.rotation = Quaternion.Euler(rot);
                 }
             }
-            Debug.Log($"Receive UPDATE_ENTITY_POSITION request for {name} with Id: {id} ");
+            //Debug.Log($"Receive UPDATE_ENTITY_POSITION request Id: {id} ");
         }
 
         #endregion
@@ -256,7 +262,7 @@ namespace Assambra.Client
 
         private void SendClientToServer(string room, string command, List<KeyValuePair<string, object>> additionalParams)
         {
-            Debug.Log("SendClientToServer");
+            //Debug.Log("SendClientToServer");
 
             var dataBuilder = EzyEntityFactory.newObjectBuilder()
                 .append("room", room)
