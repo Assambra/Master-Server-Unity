@@ -214,7 +214,11 @@ namespace Assambra.Client
                 player.SetPlayerHeadinfoName(name);
                 
                 if (!isLocalPlayer)
+                {
                     player.NetworkTransform.IsActive = true;
+                    player.NetworkTransform.Initialize(pos, Quaternion.Euler(rot));
+                }
+                    
                 else
                     player.NetworkTransform.IsActive = false;
 
@@ -259,10 +263,8 @@ namespace Assambra.Client
                         if (!player.IsLocalPlayer)
                         {
                             entity.NetworkTransform.UpdateTargetPosition(pos);
-
-                            entity.EntityGameObject.transform.rotation = Quaternion.Euler(rot);
+                            entity.NetworkTransform.UpdateTargetRotation(Quaternion.Euler(rot));
                         }
-
                     }
                 }
             }
