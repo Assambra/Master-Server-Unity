@@ -213,6 +213,11 @@ namespace Assambra.Client
                 player.Initialize((uint)id, name, playerGameObject, room, isLocalPlayer);
                 player.SetPlayerHeadinfoName(name);
                 
+                if (!isLocalPlayer)
+                    player.NetworkTransform.IsActive = true;
+                else
+                    player.NetworkTransform.IsActive = false;
+
                 GameManager.Instance.ClientEntities.Add((uint)id, player);
             }
             else
@@ -249,8 +254,16 @@ namespace Assambra.Client
             {
                 if (entity.Id == id)
                 {
-                    entity.EntityGameObject.transform.position = pos;
-                    entity.EntityGameObject.transform.rotation = Quaternion.Euler(rot);
+                    if(entity is Player player)
+                    {
+                        if (!player.IsLocalPlayer)
+                        {
+                            entity.NetworkTransform.UpdateTargetPosition(pos);
+
+                            entity.EntityGameObject.transform.rotation = Quaternion.Euler(rot);
+                        }
+
+                    }
                 }
             }
             //Debug.Log($"Receive UPDATE_ENTITY_POSITION request Id: {id} ");
