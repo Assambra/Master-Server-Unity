@@ -8,23 +8,45 @@ namespace Assambra.Server
 
     public abstract class Entity : MonoBehaviour
     {
-        public int Id { get => _id; set => _id = value; }
-        public string Name { get => _name; set => _name = value; }
-        public List<string> NearbyPlayer { get => _nearbyPlayers; }
+        public Dictionary<uint, Player> NearbyPlayers { get => _nearbyPlayers; } 
+        public uint Id { get => _id;}
+        public string Name { get => _name;}
+        public GameObject EntityGameObject { get => _entityGameObject; }
+        public bool IsStatic { get => _isStatic;}
+        public EntityType EntityType { get => _entityType;}
 
-        public delegate void PlayerInteraction(Player player);
-        public event PlayerInteraction PlayerEntered;
-        public event PlayerInteraction PlayerExited;
+        public Vector3 Position { get => gameObject.transform.position;}
+        public Quaternion Rotation { get => gameObject.transform.rotation;}
 
-        private int _id;
+        private uint _id;
         private string _name;
-        private List<string> _nearbyPlayers = new List<string>();
+        private GameObject _entityGameObject;
+        private bool _isStatic;
+        private EntityType _entityType;
 
+        private Vector3 _position;
+        private Vector3 _rotation;
+
+        private delegate void PlayerInteraction(Player player);
+        private event PlayerInteraction PlayerEntered;
+        private event PlayerInteraction PlayerExited;
+        
+        private Dictionary<uint, Player> _nearbyPlayers = new Dictionary<uint, Player>();
+        
         private SphereCollider _triggerCollider;
         private Rigidbody _rigidbody;
 
         private Vector3 _lastPosition;
         private Quaternion _lastRotation;
+
+        public virtual void Initialize(uint id, string name, GameObject entityGameObject, bool isStatic, EntityType entityType)
+        {
+            this._id = id;
+            this._name = name;
+            this._entityGameObject = entityGameObject;
+            this._isStatic = isStatic;
+            this._entityType = entityType;
+        }
 
         protected virtual void Awake()
         {
@@ -38,6 +60,9 @@ namespace Assambra.Server
 
             PlayerEntered += OnPlayerEntered;
             PlayerExited += OnPlayerExited;
+
+            _lastPosition = transform.position;
+            _lastRotation = transform.rotation;
         }
 
         protected virtual void OnDestroy()
@@ -48,9 +73,17 @@ namespace Assambra.Server
 
         private void FixedUpdate()
         {
-            if(_lastPosition != transform.position  || _lastRotation != transform.rotation)
+            if (_isStatic)
+                return;
+
+            if (_lastPosition != transform.position || _lastRotation != transform.rotation)
             {
-                // Send position and rotation to all nearbyPlayers
+                Player player = gameObject.GetComponent<Player>();
+
+                foreach (KeyValuePair<uint, Player> entry in _nearbyPlayers)
+                {
+                    NetworkManager.Instance.SendUpdateEntityPosition(entry.Value.Username, _id, transform.position, transform.rotation.eulerAngles);
+                }
             }
 
             _lastPosition = transform.position;
@@ -59,13 +92,11 @@ namespace Assambra.Server
 
         private void OnPlayerEntered(Player otherPlayer)
         {
-            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherPlayer.Name} entering the area.");
-
             Player player = gameObject.GetComponent<Player>();
-
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"{Name} has detected {otherPlayer.Name} entering the area.");
             if (player != null)
             {
-                NetworkManager.Instance.SendSpawnToPlayer(player.PlayerModel.Username, otherPlayer.PlayerModel.Name, otherPlayer.PlayerModel.Position, otherPlayer.PlayerModel.Rotation);
+                NetworkManager.Instance.SendSpawnToPlayer(player.Username, otherPlayer.Id, otherPlayer.Name, otherPlayer.Position, otherPlayer.Rotation.eulerAngles);
             }
         }
 
@@ -77,9 +108,9 @@ namespace Assambra.Server
 
             if (player != null)
             {
-                if(!otherPlayer.PlayerModel.MasterServerRequestDespawn)
+                if(!otherPlayer.MasterServerRequestedDespawn)
                 {
-                    NetworkManager.Instance.SendDespawnToPlayer(player.PlayerModel.Username, otherPlayer.PlayerModel.Name);
+                    NetworkManager.Instance.SendDespawnToPlayer(player.Username, otherPlayer.Id);
                 }
             }
         }
@@ -87,14 +118,14 @@ namespace Assambra.Server
         private void OnTriggerEnter(Collider other)
         {
             Player otherPlayer = other.GetComponent<Player>();
-
+            
             if(otherPlayer != null)
             {
-                string username = otherPlayer.PlayerModel.Username;
+                uint id = otherPlayer.Id;
 
-                if (!_nearbyPlayers.Contains(username))
+                if (!_nearbyPlayers.ContainsKey(id))
                 {
-                    _nearbyPlayers.Add(username);
+                    _nearbyPlayers.Add(id, otherPlayer);
                     PlayerEntered?.Invoke(otherPlayer);
                 }
             }
@@ -106,11 +137,11 @@ namespace Assambra.Server
 
             if(otherPlayer != null) 
             {
-                string username = otherPlayer.PlayerModel.Username;
+                uint id = otherPlayer.Id;
 
-                if (_nearbyPlayers.Contains(username))
+                if (_nearbyPlayers.ContainsKey(id))
                 {
-                    _nearbyPlayers.Remove(username);
+                    _nearbyPlayers.Remove(id);
                     PlayerExited?.Invoke(otherPlayer);
                 }
             }

@@ -6,7 +6,9 @@ using com.tvd12.ezyfoxserver.client.request;
 using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 using Object = System.Object;
 
 namespace Assambra.Server
@@ -33,6 +35,7 @@ namespace Assambra.Server
             AddHandler<EzyObject>(Commands.SERVER_STOP, ServerStopRequest);
             AddHandler<EzyObject>(Commands.PLAYER_SPAWN, PlayerSpawnRequest);
             AddHandler<EzyObject>(Commands.PLAYER_DESPAWN, PlayerDespawnRequest);
+            AddHandler<EzyObject>(Commands.PLAYER_INPUT, ReceivePlayerInput);
         }
 
         private void Update()
@@ -80,6 +83,93 @@ namespace Assambra.Server
             base.Disconnect();
         }
 
+        #region MASTER SERVER REQUESTS
+
+        private void ServerReadyRequest()
+        {
+            EzyObject data = EzyEntityFactory.newObjectBuilder()
+                .append("password", ServerManager.Instance.Password)
+                .build();
+
+            appProxy.send(Commands.SERVER_READY, data);
+        }
+
+        private void ServerStopRequest(EzyAppProxy proxy, EzyObject data)
+        {
+            Debug.Log("Receive SERVER_STOP request");
+
+            Disconnect();
+            Application.Quit();
+        }
+
+        private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
+        {
+            long id = data.get<long>("id");
+            string name = data.get<string>("name");
+            string username = data.get<string>("username");
+            EzyArray position = data.get<EzyArray>("position");
+            EzyArray rotation = data.get<EzyArray>("rotation");
+            Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
+            Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
+
+            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"Receive command.PLAYER_SPAWN for Id: {id} Name: {name}");
+
+            GameObject playerGameObject = ServerManager.Instance.CreatePlayer(pos, rot);
+            playerGameObject.name = name;
+            
+            Player player = playerGameObject.GetComponent<Player>();
+
+            if (player != null)
+            {
+                player.Initialize((uint)id, name, playerGameObject, false, EntityType.Player, username);
+                player.SetPlayerHeadinfoName(name);
+                ServerManager.Instance.ServerEntities.Add((uint)id, player);
+            }
+            else
+            {
+                Debug.LogError("Player component not found on the playerGameObject.");
+            }
+
+            // Send PlayerSpawn to client
+            bool isLocalPlayer = true;
+            SendServerToClient(username, "playerSpawn", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("id", id),
+                new KeyValuePair<string, object>("name", name),
+                new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
+                new KeyValuePair<string, object>("room", ServerManager.Instance.Room),
+                new KeyValuePair<string, object>("position", position),
+                new KeyValuePair<string, object>("rotation", rotation),
+            });
+        }
+
+        private void PlayerDespawnRequest(EzyAppProxy proxy, EzyObject data)
+        {
+            long id = data.get<long>("id");
+
+            if (ServerManager.Instance.ServerEntities.TryGetValue((uint)id, out Entity entity))
+            {
+                ServerManager.Instance.ServerLog.ServerLogMessageInfo($"Receive command.PLAYER_DESPAWN for Id: {id} Name: {entity.Name}");
+                
+                if (entity is Player player)
+                {
+                    player.MasterServerRequestedDespawn = true;
+                    List<string> usernames = player.NearbyPlayers.Values.Select(player => player.Username).ToList();
+                    SendServerToClients(usernames, "playerDespawn", new List<KeyValuePair<string, object>>
+                    {
+                        new KeyValuePair<string, object>("id", (long)player.Id),
+                    });
+
+                    Destroy(player.EntityGameObject);
+                    ServerManager.Instance.ServerEntities.Remove(player.Id);
+                }
+            }
+        }
+
+        #endregion
+
+        #region MASTER SERVER RESPONSE
+
         private void HandleLoginSuccess(EzySocketProxy proxy, Object data)
         {
             Debug.Log("Log in successfully");
@@ -95,22 +185,97 @@ namespace Assambra.Server
         {
             Debug.Log("App access successfully");
 
-            Debug.Log("SendServerReady");
-            SendServerReady();
+            Debug.Log("ServerReadyRequest");
+            ServerReadyRequest();
         }
 
-        #region SEND
+        #endregion
 
-        private void SendServerReady()
+        #region SEND TO CLIENT
+
+        public void SendSpawnToPlayer(string username, long id, string name, Vector3 position, Vector3 rotation)
         {
-            EzyObject data = EzyEntityFactory.newObjectBuilder()
-                .append("password", ServerManager.Instance.Password)
+            bool isLocalPlayer = false;
+            string room = "";
+
+            EzyArray positionArray = EzyEntityFactory.newArrayBuilder()
+                .append(position.x)
+                .append(position.y)
+                .append(position.z)
                 .build();
 
-            appProxy.send(Commands.SERVER_READY, data);
+            EzyArray rotationArray = EzyEntityFactory.newArrayBuilder()
+                .append(rotation.x)
+                .append(rotation.y)
+                .append(rotation.z)
+                .build();
+
+            SendServerToClient(username, "playerSpawn", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("id", id),
+                new KeyValuePair<string, object>("name", name),
+                new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
+                new KeyValuePair<string, object>("room", room),
+                new KeyValuePair<string, object>("position", positionArray),
+                new KeyValuePair<string, object>("rotation", rotationArray)
+            });
         }
 
-        
+        public void SendDespawnToPlayer(string username, long id)
+        {
+            SendServerToClient(username, "playerDespawn", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("id", id),
+            });
+        }
+
+        public void SendUpdateEntityPosition(string username, long id, Vector3 position, Vector3 rotation)
+        {
+            EzyArray positionArray = EzyEntityFactory.newArrayBuilder()
+                .append(position.x)
+                .append(position.y)
+                .append(position.z)
+                .build();
+
+            EzyArray rotationArray = EzyEntityFactory.newArrayBuilder()
+                .append(rotation.x)
+                .append(rotation.y)
+                .append(rotation.z)
+                .build();
+
+            SendServerToClient(username, "updateEntityPosition", new List<KeyValuePair<string, object>>
+            {
+                new KeyValuePair<string, object>("id", id),
+                new KeyValuePair<string, object>("position", positionArray),
+                new KeyValuePair<string, object>("rotation", rotationArray)
+            });
+        }
+
+        #endregion
+
+        #region RECEIVE FROM CLIENT
+
+        private void ReceivePlayerInput(EzyAppProxy proxy, EzyObject data)
+        {
+            long id = data.get<long>("id");
+            EzyArray inputArray = data.get<EzyArray>("input");
+
+            Vector2 input = new Vector2(inputArray.get<float>(0), inputArray.get<float>(1));
+
+            if (ServerManager.Instance.ServerEntities.TryGetValue((uint)id, out Entity entity))
+            {
+                if (entity is Player player)
+                {
+                    PlayerController playerController = player.EntityGameObject.GetComponent<PlayerController>();
+                    playerController.Move = new Vector3(input.x, 0, input.y);
+                }
+            }
+        }
+
+        #endregion
+
+        #region ROOM SERVER TO CLIENT MESSAGES
+
         private void SendServerToClient(string recipient, string command, List<KeyValuePair<string, object>> additionalParams)
         {
             Debug.Log("SendServerToClient");
@@ -136,7 +301,7 @@ namespace Assambra.Server
             {
                 recipientsArray.append(recipient);
             }
-            
+
             var dataBuilder = EzyEntityFactory.newObjectBuilder()
                 .append("recipients", recipientsArray.build())
                 .append("command", command);
@@ -152,115 +317,6 @@ namespace Assambra.Server
         }
 
         #endregion
-
-        #region RECEIVE
-
-        private void ServerStopRequest(EzyAppProxy proxy, EzyObject data)
-        {
-            Debug.Log("Receive SERVER_STOP request");
-            
-            Disconnect();
-            Application.Quit();
-        }
-
-        private void PlayerSpawnRequest(EzyAppProxy proxy, EzyObject data)
-        {
-            Debug.Log("Receive PLAYER_SPAWN request");
-
-            string name = data.get<string>("name");
-            string username = data.get<string>("username");
-            EzyArray position = data.get<EzyArray>("position");
-            EzyArray rotation = data.get<EzyArray>("rotation");
-            Vector3 pos = new Vector3(position.get<float>(0), position.get<float>(1), position.get<float>(2));
-            Vector3 rot = new Vector3(rotation.get<float>(0), rotation.get<float>(1), rotation.get<float>(2));
-
-            GameObject playerGameObject = ServerManager.Instance.CreatePlayer(pos, rot);
-
-            PlayerModel playerModel = new PlayerModel(playerGameObject, name, username, pos, rot);
-
-            ServerManager.Instance.ServerPlayerList.Add(playerModel);
-
-            Player player = playerGameObject.GetComponent<Player>();
-            player.Name = name;
-            player.PlayerModel = playerModel;
-
-            // Send PlayerSpawn to client
-            bool isLocalPlayer = true;
-            SendServerToClient(username, "playerSpawn", new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("name", name),
-                new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
-                new KeyValuePair<string, object>("room", ServerManager.Instance.Room),
-                new KeyValuePair<string, object>("position", position),
-                new KeyValuePair<string, object>("rotation", rotation),
-            });
-        }
-
-        private void PlayerDespawnRequest(EzyAppProxy proxy, EzyObject data)
-        {
-            string username = data.get<string>("username");
-
-            ServerManager.Instance.ServerLog.ServerLogMessageInfo($"Receive command.PLAYER_DESPAWN for {username}");
-
-            PlayerModel playerModel = null;
-
-            foreach(PlayerModel p in ServerManager.Instance.ServerPlayerList)
-            {
-                if (p.Username == username)
-                {
-                    p.MasterServerRequestDespawn = true;
-
-                    Player player = p.PlayerGameObject.GetComponent<Player>();
-
-                    SendServerToClients(player.NearbyPlayer, "playerDespawn", new List<KeyValuePair<string, object>>
-                    {
-                        new KeyValuePair<string, object>("name", p.Name),
-                    });
-
-                    playerModel = p;
-                    Destroy(p.PlayerGameObject);
-                }
-            }
-
-            ServerManager.Instance.ServerPlayerList.Remove(playerModel);
-        }
-
-        #endregion
-
-        public void SendSpawnToPlayer(string username, string name, Vector3 position, Vector3 rotation)
-        {
-            bool isLocalPlayer = false;
-            string room = "";
-
-            EzyArray positionArray = EzyEntityFactory.newArrayBuilder()
-                .append(position.x)
-                .append(position.y)
-                .append(position.z)
-                .build();
-
-            EzyArray rotationArray = EzyEntityFactory.newArrayBuilder()
-                .append(rotation.x)
-                .append(rotation.y)
-                .append(rotation.z)
-                .build();
-
-            SendServerToClient(username, "playerSpawn", new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("name", name),
-                new KeyValuePair<string, object>("isLocalPlayer", isLocalPlayer),
-                new KeyValuePair<string, object>("room", room),
-                new KeyValuePair<string, object>("position", positionArray),
-                new KeyValuePair<string, object>("rotation", rotationArray),
-            });
-        }
-
-        public void SendDespawnToPlayer(string username, string name)
-        {
-            SendServerToClient(username, "playerDespawn", new List<KeyValuePair<string, object>>
-            {
-                new KeyValuePair<string, object>("name", name)
-            });
-        }
     }
 }
 

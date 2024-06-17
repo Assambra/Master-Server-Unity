@@ -34,7 +34,7 @@ public class UserRemovedController extends EzyAbstractAppEventController<EzyUser
         {
             if(player.getUsername().equals(event.getUser().getName()))
             {
-                PlayerDespawnModel playerDespawnModel = playerService.getPlayerDespawnModel(player.getUsername());
+                PlayerDespawnModel playerDespawnModel = playerService.getPlayerDespawnModel(player.getId());
                 roomService.removePlayerFromRoom(player, playerDespawnModel);
                 playerService.removePlayerFromGlobalPlayerList(player);
             }

@@ -57,7 +57,9 @@ public class ServerController extends EzyLoggable {
 
         EzyObjectResponse response = responseFactory.newObjectResponse()
                 .command(command)
-                .username(room);
+                .username(room)
+                .param("username", ezyUser.getName());
+
 
         for (Map.Entry<String, Object> entry : requestData.entrySet()) {
             response.param(entry.getKey(), entry.getValue());
