@@ -12,7 +12,7 @@ namespace Assambra.Server
         private CharacterController _characterController;
         private Vector3 _playerVelocity;
         private bool _groundedPlayer;
-        private float _playerSpeed = 2.0f;
+        private float _playerSpeed = 5.0f;
         private float _rotationSpeed = 150f;
         private float _jumpHeight = 1.0f;
         private float _gravityValue = -9.81f;

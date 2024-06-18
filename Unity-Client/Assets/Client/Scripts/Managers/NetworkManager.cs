@@ -218,9 +218,15 @@ namespace Assambra.Client
                     player.NetworkTransform.IsActive = true;
                     player.NetworkTransform.Initialize(pos, Quaternion.Euler(rot));
                 }
-                    
                 else
-                    player.NetworkTransform.IsActive = false;
+                {
+                    GameManager.Instance.CameraController.ChangeCameraPreset("InGameCamera");
+                    GameManager.Instance.CameraController.CameraTarget = playerGameObject;
+                    GameManager.Instance.CameraController.Active = true;
+
+                  player.NetworkTransform.IsActive = false;
+                }
+                   
 
                 GameManager.Instance.ClientEntities.Add((uint)id, player);
             }

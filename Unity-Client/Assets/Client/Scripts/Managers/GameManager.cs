@@ -6,6 +6,7 @@ namespace Assambra.Client
 {
     public class GameManager : BaseGameManager
     {
+        public CameraController CameraController;
         [SerializeField] private GameObject _playerPrefab;
         
         public static GameManager Instance;
@@ -18,6 +19,8 @@ namespace Assambra.Client
                 Destroy(this);
             else
                 Instance = this;
+
+            CameraController.ChangeCameraPreset("PreGameCamera");
         }
 
         protected override void OnSceneChanged(Scene lastScene, Scene newScene)
