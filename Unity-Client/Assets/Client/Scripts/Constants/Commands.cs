@@ -14,7 +14,7 @@ namespace Assambra.Client
         public const String SERVER_TO_CLIENTS = "serverToClients";
         public const String PLAYER_INPUT = "playerInput";
         public const String UPDATE_ENTITY_POSITION = "updateEntityPosition";
-
+        
         private Commands() { }
     }
 }

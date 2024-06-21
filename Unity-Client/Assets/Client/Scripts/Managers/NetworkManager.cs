@@ -6,6 +6,7 @@ using com.tvd12.ezyfoxserver.client.factory;
 using com.tvd12.ezyfoxserver.client.request;
 using com.tvd12.ezyfoxserver.client.support;
 using com.tvd12.ezyfoxserver.client.unity;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Object = System.Object;
@@ -202,7 +203,9 @@ namespace Assambra.Client
 
             Player player = playerGameObject.GetComponent<Player>();
             PlayerController playerController = playerGameObject.GetComponent<PlayerController>();
-            
+
+            StartCoroutine(DelayToEnableCharacterController(playerController));
+
             if(playerController != null)
                 playerController.Player = player;
             else
@@ -224,7 +227,7 @@ namespace Assambra.Client
                     GameManager.Instance.CameraController.CameraTarget = playerGameObject;
                     GameManager.Instance.CameraController.Active = true;
 
-                  player.NetworkTransform.IsActive = false;
+                    player.NetworkTransform.IsActive = false;
                 }
                    
 
@@ -236,6 +239,13 @@ namespace Assambra.Client
             }
         }
 
+        private IEnumerator DelayToEnableCharacterController(PlayerController playerController)
+        {
+            yield return new WaitForSeconds(0.5f);
+
+            playerController.CharacterController.enabled = true;
+        }
+
         private void ReceivePlayerDespawn(EzyAppProxy proxy, EzyObject data)
         {
             long id = data.get<long>("id");
@@ -245,6 +255,11 @@ namespace Assambra.Client
             {
                 if (entity is Player player)
                 {
+                    if(player.IsLocalPlayer)
+                    {
+                        GameManager.Instance.CameraController.Active = false;
+                        GameManager.Instance.CameraController.CameraTarget = null;
+                    }
                     Destroy(player.EntityGameObject);
                     GameManager.Instance.ClientEntities.Remove(player.Id);
                 }

@@ -64,6 +64,24 @@ public class PlayerService extends EzyLoggable {
                 .orElse(null);
     }
 
+    /**
+     * This method found a UnityPlayer in the globalPlayerList by its Id
+     * It takes a id as {@code Long}
+     *
+     * @param id
+     *        Player database id
+     *
+     * @return A UnityPlayer object if found else returns {@code NULL}
+     */
+    public UnityPlayer getPlayerByIdFromGlobalPlayerManager(Long id)
+    {
+        List<UnityPlayer> players = globalPlayerManager.getPlayerList();
+        return players.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
     public PlayerSpawnModel getPlayerSpawnModel (Character character, CharacterLocation characterLocation)
     {
         double[] pos = characterLocation.getPosition();
@@ -87,6 +105,17 @@ public class PlayerService extends EzyLoggable {
                                 (float)rot[2]
                         ).toArray()
                 )
+                .build();
+    }
+
+    public PlayerSpawnModel getPlayerSpawnModel(UnityPlayer player, Vec3 position, Vec3 rotation)
+    {
+        return PlayerSpawnModel.builder()
+                .id(player.getId())
+                .name(player.getName())
+                .username(player.getUsername())
+                .position(position.toArray())
+                .rotation(rotation.toArray())
                 .build();
     }
 

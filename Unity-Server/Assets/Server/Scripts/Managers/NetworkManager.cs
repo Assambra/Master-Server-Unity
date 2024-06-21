@@ -8,7 +8,6 @@ using com.tvd12.ezyfoxserver.client.unity;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 using Object = System.Object;
 
 namespace Assambra.Server
@@ -83,9 +82,9 @@ namespace Assambra.Server
             base.Disconnect();
         }
 
-        #region MASTER SERVER REQUESTS
+        #region SEND TO MASTER SERVER
 
-        private void ServerReadyRequest()
+        private void SendServerReadyRequest()
         {
             EzyObject data = EzyEntityFactory.newObjectBuilder()
                 .append("password", ServerManager.Instance.Password)
@@ -93,6 +92,30 @@ namespace Assambra.Server
 
             appProxy.send(Commands.SERVER_READY, data);
         }
+
+        public void SendChangeServerRequest(long id, string room, Vector3 position, Vector3 rotation)
+        {
+            EzyObject data = EzyEntityFactory.newObjectBuilder()
+                .append("id", id)
+                .append("room", room)
+                .append("position", EzyEntityFactory.newArrayBuilder()
+                        .append(position.x)
+                        .append(position.y)
+                        .append(position.z)
+                        .build())
+                .append("rotation", EzyEntityFactory.newArrayBuilder()
+                    .append(rotation.x)
+                    .append(rotation.y)
+                    .append(rotation.z)
+                    .build())
+                .build();
+
+            appProxy.send(Commands.CHANGE_SERVER, data);
+        }
+
+        #endregion
+
+        #region MASTER SERVER REQUESTS
 
         private void ServerStopRequest(EzyAppProxy proxy, EzyObject data)
         {
@@ -154,6 +177,9 @@ namespace Assambra.Server
                 if (entity is Player player)
                 {
                     player.MasterServerRequestedDespawn = true;
+
+                    SendDespawnToPlayer(player.Username, player.Id);
+                    
                     List<string> usernames = player.NearbyPlayers.Values.Select(player => player.Username).ToList();
                     SendServerToClients(usernames, "playerDespawn", new List<KeyValuePair<string, object>>
                     {
@@ -186,7 +212,7 @@ namespace Assambra.Server
             Debug.Log("App access successfully");
 
             Debug.Log("ServerReadyRequest");
-            ServerReadyRequest();
+            SendServerReadyRequest();
         }
 
         #endregion
