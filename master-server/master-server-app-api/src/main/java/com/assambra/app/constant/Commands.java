@@ -10,6 +10,7 @@ public final class Commands {
     public static final String PLAY = "play";
     public static final String PLAYER_SPAWN = "playerSpawn";
     public static final String PLAYER_DESPAWN = "playerDespawn";
+    public static final String CHANGE_SERVER = "changeServer";
 
     private Commands() {}
 }

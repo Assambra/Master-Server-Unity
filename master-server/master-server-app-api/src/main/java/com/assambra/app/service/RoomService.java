@@ -45,7 +45,7 @@ public class RoomService extends EzyLoggable {
     {
         UnityRoom room = getRoom(player.getCurrentRoomId());
         room.removePlayer(player);
-        player.setCurrentRoomId(0);
+        //player.setCurrentRoomId(0);
 
         modelToResponseConverter.toResponse(playerDespawnModel)
                 .command(Commands.PLAYER_DESPAWN)

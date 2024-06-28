@@ -3,12 +3,14 @@ using UnityEngine;
 
 namespace Assambra.Server
 {
-    [RequireComponent(typeof(SphereCollider))]
     [RequireComponent(typeof(Rigidbody))]
-
     public abstract class Entity : MonoBehaviour
     {
-        public Dictionary<uint, Player> NearbyPlayers { get => _nearbyPlayers; } 
+        [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private CapsuleCollider _capsuleCollider;
+        [SerializeField] private AreaOfInterest _areaOfInterest;
+
+        public Dictionary<uint, Player> NearbyPlayers { get => _areaOfInterest.NearbyPlayers; } 
         public uint Id { get => _id;}
         public string Name { get => _name;}
         public GameObject EntityGameObject { get => _entityGameObject; }
@@ -27,15 +29,6 @@ namespace Assambra.Server
         private Vector3 _position;
         private Vector3 _rotation;
 
-        private delegate void PlayerInteraction(Player player);
-        private event PlayerInteraction PlayerEntered;
-        private event PlayerInteraction PlayerExited;
-        
-        private Dictionary<uint, Player> _nearbyPlayers = new Dictionary<uint, Player>();
-        
-        private SphereCollider _triggerCollider;
-        private Rigidbody _rigidbody;
-
         private Vector3 _lastPosition;
         private Quaternion _lastRotation;
 
@@ -50,16 +43,8 @@ namespace Assambra.Server
 
         protected virtual void Awake()
         {
-            _triggerCollider = GetComponent<SphereCollider>();
-            _triggerCollider.isTrigger = true;
-            _triggerCollider.center = new Vector3(0, 1, 0);
-            _triggerCollider.radius = ServerConstants.AREA_OF_INTEREST;
-
-            _rigidbody = GetComponent<Rigidbody>();
-            _rigidbody.isKinematic = true;
-
-            PlayerEntered += OnPlayerEntered;
-            PlayerExited += OnPlayerExited;
+            _areaOfInterest.PlayerEntered += OnPlayerEntered;
+            _areaOfInterest.PlayerExited += OnPlayerExited;
 
             _lastPosition = transform.position;
             _lastRotation = transform.rotation;
@@ -67,8 +52,11 @@ namespace Assambra.Server
 
         protected virtual void OnDestroy()
         {
-            PlayerEntered -= OnPlayerEntered;
-            PlayerExited -= OnPlayerExited;
+            _areaOfInterest.PlayerEntered -= OnPlayerEntered;
+            _areaOfInterest.PlayerExited -= OnPlayerExited;
+
+            _rigidbody.useGravity = false;
+            _rigidbody.isKinematic = true;
         }
 
         private void FixedUpdate()
@@ -80,7 +68,7 @@ namespace Assambra.Server
             {
                 Player player = gameObject.GetComponent<Player>();
 
-                foreach (KeyValuePair<uint, Player> entry in _nearbyPlayers)
+                foreach (KeyValuePair<uint, Player> entry in _areaOfInterest.NearbyPlayers)
                 {
                     NetworkManager.Instance.SendUpdateEntityPosition(entry.Value.Username, _id, transform.position, transform.rotation.eulerAngles);
                 }
@@ -108,41 +96,9 @@ namespace Assambra.Server
 
             if (player != null)
             {
-                if(!otherPlayer.MasterServerRequestedDespawn)
+                if (!otherPlayer.MasterServerRequestedDespawn)
                 {
                     NetworkManager.Instance.SendDespawnToPlayer(player.Username, otherPlayer.Id);
-                }
-            }
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            Player otherPlayer = other.GetComponent<Player>();
-            
-            if(otherPlayer != null)
-            {
-                uint id = otherPlayer.Id;
-
-                if (!_nearbyPlayers.ContainsKey(id))
-                {
-                    _nearbyPlayers.Add(id, otherPlayer);
-                    PlayerEntered?.Invoke(otherPlayer);
-                }
-            }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            Player otherPlayer = other.GetComponent<Player>();
-
-            if(otherPlayer != null) 
-            {
-                uint id = otherPlayer.Id;
-
-                if (_nearbyPlayers.ContainsKey(id))
-                {
-                    _nearbyPlayers.Remove(id);
-                    PlayerExited?.Invoke(otherPlayer);
                 }
             }
         }
