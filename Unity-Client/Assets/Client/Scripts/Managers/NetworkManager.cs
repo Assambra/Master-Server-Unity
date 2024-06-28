@@ -19,6 +19,8 @@ namespace Assambra.Client
 
         private EzySocketConfig socketConfig;
 
+        private bool _despawnInProgress;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -198,7 +200,14 @@ namespace Assambra.Client
                 GameManager.Instance.ChangeScene(scenes);
             }
 
-            GameObject playerGameObject = GameManager.Instance.CreatePlayer(pos, rot);
+            StartCoroutine(WaitUntilDespawnDone(id, name, isLocalPlayer, room, pos, rot));
+        }
+
+        private IEnumerator WaitUntilDespawnDone(long id, string name, bool isLocalPlayer, string room, Vector3 position, Vector3 rotation)
+        {
+            yield return new WaitUntil(() => _despawnInProgress == false);
+
+            GameObject playerGameObject = GameManager.Instance.CreatePlayer(position, rotation);
             playerGameObject.name = name;
 
             Player player = playerGameObject.GetComponent<Player>();
@@ -206,7 +215,7 @@ namespace Assambra.Client
 
             StartCoroutine(DelayToEnableCharacterController(playerController));
 
-            if(playerController != null)
+            if (playerController != null)
                 playerController.Player = player;
             else
                 Debug.LogError("PlayerController component not found on the playerGameObject.");
@@ -215,11 +224,11 @@ namespace Assambra.Client
             {
                 player.Initialize((uint)id, name, playerGameObject, room, isLocalPlayer);
                 player.SetPlayerHeadinfoName(name);
-                
+
                 if (!isLocalPlayer)
                 {
                     player.NetworkTransform.IsActive = true;
-                    player.NetworkTransform.Initialize(pos, Quaternion.Euler(rot));
+                    player.NetworkTransform.Initialize(position, Quaternion.Euler(rotation));
                 }
                 else
                 {
@@ -229,7 +238,6 @@ namespace Assambra.Client
 
                     player.NetworkTransform.IsActive = false;
                 }
-                   
 
                 GameManager.Instance.ClientEntities.Add((uint)id, player);
             }
@@ -248,6 +256,8 @@ namespace Assambra.Client
 
         private void ReceivePlayerDespawn(EzyAppProxy proxy, EzyObject data)
         {
+            _despawnInProgress = true;
+
             long id = data.get<long>("id");
             //Debug.Log($"Receive PLAYER_DESPAWN request for {id}");
 
@@ -259,11 +269,22 @@ namespace Assambra.Client
                     {
                         GameManager.Instance.CameraController.Active = false;
                         GameManager.Instance.CameraController.CameraTarget = null;
+
+                        foreach(KeyValuePair<uint, Entity> e in GameManager.Instance.ClientEntities)
+                        {
+                            Destroy(e.Value.EntityGameObject);
+                        }
+                        GameManager.Instance.ClientEntities.Clear();
                     }
-                    Destroy(player.EntityGameObject);
-                    GameManager.Instance.ClientEntities.Remove(player.Id);
+                    else
+                    {
+                        Destroy(player.EntityGameObject);
+                        GameManager.Instance.ClientEntities.Remove(player.Id);
+                    }
                 }
             }
+
+            _despawnInProgress = false;
         }
 
         private void ReceiveUpdateEntityPosition(EzyAppProxy proxy, EzyObject data)

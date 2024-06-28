@@ -96,7 +96,7 @@ namespace Assambra.Server
 
             if (player != null)
             {
-                if(!otherPlayer.MasterServerRequestedDespawn)
+                if (!otherPlayer.MasterServerRequestedDespawn)
                 {
                     NetworkManager.Instance.SendDespawnToPlayer(player.Username, otherPlayer.Id);
                 }
