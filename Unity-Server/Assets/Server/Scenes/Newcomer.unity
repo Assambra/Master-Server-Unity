@@ -486,6 +486,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Portal
       objectReference: {fileID: 0}
+    - target: {fileID: 4472217468398031171, guid: 33443916ee622454db86e963abb33465, type: 3}
+      propertyPath: _room
+      value: World
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472217468398031171, guid: 33443916ee622454db86e963abb33465, type: 3}
+      propertyPath: _portalName
+      value: World
+      objectReference: {fileID: 0}
     - target: {fileID: 5382311242565558365, guid: 33443916ee622454db86e963abb33465, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
