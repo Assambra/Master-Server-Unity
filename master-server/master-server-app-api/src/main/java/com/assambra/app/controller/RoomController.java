@@ -41,7 +41,6 @@ public class RoomController extends EzyLoggable {
         PlayerDespawnModel playerDespawnModel = playerService.getPlayerDespawnModel(request.getId());
         roomService.removePlayerFromRoom(player, playerDespawnModel);
 
-
         PlayerSpawnModel playerSpawnModel = playerService.getPlayerSpawnModel(player, position, rotation);
         roomService.addPlayerToRoom(player, request.getRoom(), playerSpawnModel);
     }
