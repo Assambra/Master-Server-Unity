@@ -57,6 +57,16 @@
 <ul>
     <li>Extending EzyFox Server's room management to launch a dedicated Unity server</li>
     <li>One Unity-Server for all rooms/servers</li>
+    <li>Area of interest System on the Unity-Server</li>
+        <ul>
+            <li>Capability to spawn or despawn entities based on range</li>
+            <li>Each entity has a NearbyPlayer list and sends position updates only to players in this list</li>
+        </ul>
+    <li>Entity-based System</li>
+    <ul>
+        <li>An entity is the base and can be a player, effect, or building (currently, only Player is implemented)</li>
+        <li>Each entity automatically adds the NetworkTransform component, is added to the client’s entity list, and receives position updates or spawn/despawn events based on range</li>
+    </ul>
 </ul>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
