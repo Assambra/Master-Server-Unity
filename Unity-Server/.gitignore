@@ -76,3 +76,5 @@ crashlytics-build.properties
 
 # EzyFox C# client Unity
 /Assets/ezyfox-server-csharp-client-1.1.6-unity
+!/Assets/ezyfox-server-csharp-client-1.1.6-unity/com.tvd12.ezyfoxserver.client.asmdef
+!/Assets/ezyfox-server-csharp-client-1.1.6-unity/com.tvd12.ezyfoxserver.client.asmdef.meta
