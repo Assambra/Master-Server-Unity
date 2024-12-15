@@ -75,6 +75,9 @@ crashlytics-build.properties
 /Assets/TextMesh Pro
 
 # EzyFox C# client Unity
-/Assets/ezyfox-server-csharp-client-1.1.6-unity
-!/Assets/ezyfox-server-csharp-client-1.1.6-unity/com.tvd12.ezyfoxserver.client.asmdef
-!/Assets/ezyfox-server-csharp-client-1.1.6-unity/com.tvd12.ezyfoxserver.client.asmdef.meta
+/Assets/Plugins/ezyfox-server-csharp-client-1.1.6-unity/*
+!/Assets/Plugins/ezyfox-server-csharp-client-1.1.6-unity/com.tvd12.ezyfoxserver.client.asmdef
+!/Assets/Plugins/ezyfox-server-csharp-client-1.1.6-unity/com.tvd12.ezyfoxserver.client.asmdef.meta
+
+#Quantum Console Pro
+/Assets/Plugins/QFSW/Quantum Console/*
